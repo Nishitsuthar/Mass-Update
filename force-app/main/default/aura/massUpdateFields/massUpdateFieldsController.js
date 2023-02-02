@@ -72,6 +72,7 @@
 
     previousClikButton: function(component, event, helper) {
         var selectedStep = event.getSource().get("v.value");
+        console.log('selectstep====='+ selectedStep);
         var nextStep = selectedStep == 'Step2' ? 'Step1' : 'finished';
 
         if (nextStep == 'finished') {

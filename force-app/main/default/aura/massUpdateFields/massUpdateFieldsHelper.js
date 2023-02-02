@@ -6,14 +6,44 @@
             if (state === "SUCCESS") {
                 var arr = [];
                 var storeResponse = response.getReturnValue();
-                storeResponse.sort();
+                // console.log(storeResponse);
+                // storeResponse.sort();
                 // console.log('store======'+storeResponse);
                 for(var i=0; i <storeResponse.length; i++){
                     arr.push({
                         value : storeResponse[i].split(',')[0],
                         label : storeResponse[i].split(',')[1]
                     });
-                }               
+                }  
+                // function myFunction() {
+                //     cars.sort(function(a, b){
+                //       let x = a.type.toLowerCase();
+                //       let y = b.type.toLowerCase();
+                //       if (x < y) {return -1;}
+                //       if (x > y) {return 1;}
+                //       return 0;
+                //     });
+                //     displayCars();
+                //   }
+
+                // JENISH GANGANI
+                arr.sort((a, b) => {
+                    let nameA = a.label.toUpperCase(); // ignore upper and lowercase
+                    let nameB = b.label.toUpperCase(); // ignore upper and lowercase
+                    if (nameA < nameB) {
+                      return -1;
+                    }
+                    if (nameA > nameB) {
+                      return 1;
+                    }
+                  
+                    // names must be equal
+                    return 0;
+                  });
+                // JENISH GANGANI
+
+                // arr.sort();    
+                // console.log('list of objcet:::'+JSON.stringify(arr));         
                 component.set("v.ObjectListMain", arr);
             }        
         });        
@@ -69,9 +99,28 @@
             var headerData = component.get("v.header");
             var objectField = component.get("v.fieldList");
 
+            // JENISH GANGANI
+            objectField.sort((a, b) => {
+                let nameA = a.label.toUpperCase(); // ignore upper and lowercase
+                let nameB = b.label.toUpperCase(); // ignore upper and lowercase
+                if (nameA < nameB) {
+                  return -1;
+                }
+                if (nameA > nameB) {
+                  return 1;
+                }
+              
+                // names must be equal
+                return 0;
+              });
+
+             // JENISH GANGANI
+
+
             console.log('headerData====='+headerData);
             console.log('header length====='+headerData.length);
-            console.log('objectField======'+JSON.stringify(objectField));
+            console.log('objectField11======'+JSON.stringify(objectField));
+            
 
             for(var i=0; i< headerData.length;i++){
                 var data = {};

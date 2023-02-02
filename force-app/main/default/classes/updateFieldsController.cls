@@ -8,8 +8,9 @@ public with sharing class updateFieldsController {
     
     //Gets all standard and custom Object from salesforce
     @AuraEnabled(cacheable=true)
-    public static List<string> getAllObject() {    
-        List<String> sObjectList = new List<String>();
+    public static List<string> getAllObject() {  
+         List<String> sObjectList = new List<String>();
+         
         System.debug('global==='+schema.getGlobalDescribe());
         System.debug('global==='+schema.getGlobalDescribe().values());
 
@@ -57,6 +58,8 @@ public with sharing class updateFieldsController {
             }
         }
         
+        System.debug('lstfieldname===='+lstfieldname);
+
         return lstfieldname;
     }
     
