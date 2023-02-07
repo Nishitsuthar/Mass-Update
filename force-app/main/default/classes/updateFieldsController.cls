@@ -53,7 +53,7 @@ public with sharing class updateFieldsController {
                 field.formulaField     = dfield.getDefaultValueFormula();
                 field.relationshipName = dfield.getRelationshipName();    
 
-                 apiList.add(dfield.getName());
+                 apiList.add((dfield.getName()).toUpperCase());
                 // pairWrapper1 field1 = new pairWrapper1();
                 // field1.apiNameList = dfield.getName();
 

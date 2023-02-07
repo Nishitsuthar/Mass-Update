@@ -74,24 +74,32 @@
                         // --------------------------------------------------jenish gangani5/2/23
 
                         if (trimrow.indexOf("") !== -1) {
-                            if (trimrow.indexOf("") == (trimrow.length - 1)) {
-                                helper.showToast(
-                                    "Info",
-                                    "Info!",
-                                    "Please remove your duplicat [] collum"
-                                );
-                                // trimrow.pop();
-                                // component.set("v.header", trimrow);
+                            helper.showToast(
+                                "Info",
+                                "Info!",
+                                "Please remove your extra collum"
+                            );
+                            var compEvent1 = component.getEvent("disableNextButton");
+                            console.log('component:::' + JSON.stringify(compEvent1));
+                            compEvent1.setParams({ "checkButton": true });
+                            compEvent1.fire();
+                        } else if (trimrow.indexOf("") == (trimrow.length - 1)) {
+                            helper.showToast(
+                                "Info",
+                                "Info!",
+                                "Please remove your duplicat [] collum"
+                            );
+                            var compEvent1 = component.getEvent("disableNextButton");
+                            compEvent1.setParams({ "checkButton": true });
+                            compEvent1.fire();
 
-                            } else {
-                                helper.showToast(
-                                    "Info",
-                                    "Info!",
-                                    "Please remove your extra collum"
-                                );
+                        } else {
+                            var compEvent1 = component.getEvent("disableNextButton");
+                            compEvent1.setParams({ "checkButton": false });
+                            compEvent1.fire();
 
-                            }
                         }
+
                         function checkIfDuplicateExists(arr) {
                             return new Set(arr).size != arr.length;
                         }
@@ -102,10 +110,6 @@
                             compEvent.fire();
                             helper.showToast("Info", "Info!", "Please remove same api Name in Header");
                             // component.set("v.stepOneNextButton", true);
-                        }else{
-                            var compEvent = component.getEvent("disableNextButton");
-                            compEvent.setParams({ "checkButton": false });
-                            compEvent.fire();
                         }
 
                         //jenish gangani 3/2/23
