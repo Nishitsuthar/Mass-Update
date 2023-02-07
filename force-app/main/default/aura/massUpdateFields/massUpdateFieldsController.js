@@ -186,5 +186,11 @@
 
     showSelectFieldHelp: function (component, event, helper) {
         component.set('v.SelectFieldHelp', true);
+    },
+
+    //* jenish gangani 7/2/23
+    handleNextButton: function(component, event, helper){
+        var getEvent = event.getParam("checkButton");
+        component.set("v.stepOneNextButton", getEvent);
     }
 })

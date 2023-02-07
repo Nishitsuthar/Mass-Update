@@ -58,6 +58,10 @@
     <aura:attribute name="FieldMappingDeleteButton" type="boolean" default="false"/>
           <!-- jenish ganganai 2/2/23 -->
 
+          <!-- jenish gangani 7/2/23 -->
+    <aura:handler name="disableNextButton" event="c:disableButtonEvent" action="{!c.handleNextButton}" />
+          <!-- jenish gangani 7/2/23 -->
+
     
     <aura:if isTrue="{!v.finished == false}">
         <div>

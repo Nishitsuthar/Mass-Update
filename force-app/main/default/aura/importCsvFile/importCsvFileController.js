@@ -97,10 +97,15 @@
                         }
 
                         if (checkIfDuplicateExists(trimrow)) {
+                            var compEvent = component.getEvent("disableNextButton");
+                            compEvent.setParams({ "checkButton": true });
+                            compEvent.fire();
                             helper.showToast("Info", "Info!", "Please remove same api Name in Header");
                             // component.set("v.stepOneNextButton", true);
-
-
+                        }else{
+                            var compEvent = component.getEvent("disableNextButton");
+                            compEvent.setParams({ "checkButton": false });
+                            compEvent.fire();
                         }
 
                         //jenish gangani 3/2/23
