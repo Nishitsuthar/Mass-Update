@@ -9,6 +9,9 @@
     <aura:attribute name="label" type="String" default=""/>
     <aura:attribute name="IconName" type="String" default=""/>
     <aura:attribute name="fieldList" type="SObject" />
+
+    <aura:attribute name="apiListofObject" type="object[]" />
+
     <aura:attribute name="ObjectListMain" type="List" />
     <aura:attribute name="isSelectAll" type="boolean" default="false"/>
     <aura:attribute name="visibileInputBox" type="Boolean" default="false" />
@@ -19,6 +22,13 @@
     <aura:attribute name="showSpinner" type="Boolean" default="false" />
     <aura:attribute name="tabledata" type="object[]" />
     <aura:attribute name="header" type="object[]" />
+
+
+    <!-- jenish ganganai 2/2/23 -->
+    <aura:attribute name="progress" type="Integer" default="0"/>
+    <aura:attribute name="fileName" type="String" default="No File Selected.." />
+     <!-- jenish gangani 2/2/23 -->
+
     <aura:attribute name="allDataList" type="object[]" />
     <aura:attribute name="addDeleteBoolean" type="boolean"  default="false"/>
     <aura:attribute name="tableListData" type="List"/>
@@ -41,6 +51,13 @@
     
     <aura:attribute name="selectObjectHelp" type="boolean" default="false"/>
     <aura:attribute name="SelectFieldHelp" type="boolean" default="false"/>    
+
+        <!-- jenish ganganai 2/2/23 -->
+    <aura:attribute name="stepOneNextButton" type="boolean" default="false"/>
+    <aura:attribute name="CriteriaDeleteButton" type="boolean" default="true"/>
+    <aura:attribute name="FieldMappingDeleteButton" type="boolean" default="false"/>
+          <!-- jenish ganganai 2/2/23 -->
+
     
     <aura:if isTrue="{!v.finished == false}">
         <div>
@@ -114,7 +131,7 @@
                             </aura:if>
                         </div>
                         <div class="slds-p-around_medium" style="width:70%;margin-left:15%;">
-                            <c:importCsvFile header="{!v.header}" tabledata="{!v.tabledata}" />
+                            <c:importCsvFile  header="{!v.header}" tabledata="{!v.tabledata}"  progress="{!v.progress}" fileName ="{!v.fileName}"/>
                             <!-- <lightning:fileUpload aura:id = "file"
                                     onuploadfinished="{!c.showcsvdata}"
                                     name = "file"
@@ -151,7 +168,7 @@
                             {!v.currentStep}
                             <div class="slds-clearfix">
                                 <div class="slds-float_right"> 
-                                    <lightning:button variant="brand" aura:id="save" value="{!v.currentStep}" label="Next" title="Next" onclick="{! c.callNexthandle }"/>
+                                    <lightning:button disabled="{!v.stepOneNextButton}" variant="brand" aura:id="save" value="{!v.currentStep}" label="Next" title="Next" onclick="{! c.callNexthandle }"/>
                                 </div>
                             </div>
                         </div>
@@ -229,7 +246,7 @@
                                             </lightning:select>
                                         </td>
                                         <td>
-                                            <lightning:buttonIcon name="{!index}" iconName="utility:delete"  size="large" variant="bare" alternativeText="Delete" onclick="{!c.deleteRow}"/>  
+                                            <lightning:buttonIcon disabled="{!v.CriteriaDeleteButton}" name="{!index}" iconName="utility:delete"  size="large" variant="bare" alternativeText="Delete" onclick="{!c.deleteRow}"/>  
                                         </td> 
                                     </tr>
                                 </tbody>
@@ -289,7 +306,7 @@
                                             
                                         </td>
                                         <td>
-                                            <lightning:buttonIcon name="{!int}" iconName="utility:delete"  size="large" variant="bare" alternativeText="Delete" onclick="{!c.deleteMapRow}"/>  
+                                            <lightning:buttonIcon disabled="{!v.FieldMappingDeleteButton}" name="{!int}" iconName="utility:delete"  size="large" variant="bare" alternativeText="Delete" onclick="{!c.deleteMapRow}"/>  
                                         </td> 
                                     </tr>
                                 </aura:iteration>

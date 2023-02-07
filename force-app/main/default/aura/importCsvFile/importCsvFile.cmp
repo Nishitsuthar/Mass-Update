@@ -6,6 +6,8 @@
     <aura:attribute name="fileName" type="String" default="No File Selected.." />
     <aura:attribute name="progress" type="Integer" default="0"/>
     <aura:attribute name="isProgressing" type="Boolean" default="false"/>
+
+    
     
     <div>
         <lightning:input aura:id="file" 

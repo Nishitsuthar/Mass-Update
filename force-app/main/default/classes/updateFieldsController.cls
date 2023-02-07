@@ -33,8 +33,10 @@ public with sharing class updateFieldsController {
     
     //Getting fields from salesforce using ObjectName
     @AuraEnabled
-    public static List<pairWrapper> getObjectSelectField(String ObjectName){
+    public static List<pairWrapper1> getObjectSelectField(String ObjectName){
         List<pairWrapper> lstfieldname = new List<pairWrapper>();
+        List<pairWrapper1> apiNameAndList = new List<pairWrapper1>(); 
+        List<String> apiList = new List<String>();
         Map<String, Schema.SObjectField> fieldMap = Schema.getGlobalDescribe().get(ObjectName).getDescribe().fields.getMap();
       
         for (Schema.SObjectField fields: fieldMap.Values()) {  
@@ -49,18 +51,34 @@ public with sharing class updateFieldsController {
                 field.fieldSize        = Integer.valueOf(dfield.getLength());
                 field.refrence         = String.valueOf(dfield.getReferenceTo());
                 field.formulaField     = dfield.getDefaultValueFormula();
-                field.relationshipName = dfield.getRelationshipName();      
+                field.relationshipName = dfield.getRelationshipName();    
+
+                 apiList.add(dfield.getName());
+                // pairWrapper1 field1 = new pairWrapper1();
+                // field1.apiNameList = dfield.getName();
+
                 if(field.apiName == 'Id'){
                     lstfieldname.add(field);
                 }else if(dfield.isUpdateable() == true &&  dfield.getType() != Schema.DisplayType.DATETIME && dfield.getType() != Schema.DisplayType.TIME){
                     lstfieldname.add(field);
+                   
+
                 }
             }
         }
+        pairWrapper1 field1 = new pairWrapper1();
+
+
+        field1.pairWrapperList = lstfieldname;
+        field1.apiNameList = apiList;
         
         System.debug('lstfieldname===='+lstfieldname);
+        System.debug('APiListName===='+apiList);
+        apiNameAndList.add(field1);
+        System.debug('apinameeee:::'+ apiNameAndList);
 
-        return lstfieldname;
+        // return lstfieldname;
+        return apiNameAndList;
     }
     
     //  Get the csv data and make query for getting salesforce data
@@ -412,7 +430,18 @@ public with sharing class updateFieldsController {
         @AuraEnabled public String formulaField{get; set;}
         @AuraEnabled public String relationshipName{get; set;}
         @AuraEnabled public String NotUpdatable{get; set;}
+
     }
+
+
+    // -----------jenish gangani
+public class pairWrapper1{
+        @AuraEnabled public List<string> apiNameList{get; set;}
+        @AuraEnabled public List<pairWrapper> pairWrapperList{get; set;}
+
+    }
+    // -----------jenish gangani
+
     
     public class uploadCsvFileJsonWrapper{
         @AuraEnabled public String csvfield{get; set;}  
