@@ -14,17 +14,6 @@
         $A.util.addClass(forclose, 'slds-is-close');
         $A.util.removeClass(forclose, 'slds-is-open');
     },
-    
-    changePath: function (component, event, helper) {
-        //Set the progress bar indicator for Details to complete
-        var toggleIndicatorCurrent = component.find("step1Indicator");
-        $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
-        $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
-        //Set the progress bar indicator for Account selection to current
-        var toggleIndicatorNext = component.find("step2Indicator");
-        $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
-        $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
-    },
 
     // function for clear the Record Selection 
     clear: function (component, event, helper) {
@@ -90,9 +79,11 @@
         $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
         $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
         var toggleIndicatorCurrent = component.find("step1Indicator");
+        var secoundColour = component.find("secoundColour");
+        $A.util.removeClass(secoundColour, 'secoundColour');
         $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
         $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
-        
+
         // -----------------------------jenish gangani 8/2/23
         var nextStep = selectedStep == 'Step2' ? 'Step1' : 'finished';
 
@@ -120,7 +111,10 @@
         var toggleIndicatorCurrent = component.find("step2Indicator");
         $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
         $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
-       
+        var toggleIndicatorCurrent = component.find("thirdColour");
+        $A.util.removeClass(toggleIndicatorCurrent, 'thirdColour');
+
+
         // --------------------------------------------jenish gangani
 
 
@@ -163,12 +157,15 @@
         var tablePushDataList = component.get('v.tableListData');
         var sfPushData = component.get('v.FieldToUpdateList');
         // ------------------------------jenish gangani
-            var toggleIndicatorCurrent = component.find("step2Indicator");
-            $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
-            $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
-            var toggleIndicatorNext = component.find("step3Indicator");
-            $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
-            $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
+        var toggleIndicatorCurrent = component.find("step2Indicator");
+        $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
+        $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
+        var thirdColour = component.find("thirdColour");
+        $A.util.addClass(thirdColour, 'thirdColour');
+
+        var toggleIndicatorNext = component.find("step3Indicator");
+        $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
+        $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
         // ------------------------------jenish gangani
 
 

@@ -72,10 +72,6 @@
                         component.set("v.header", trimrow);
 
                         // --------------------------------------------------jenish gangani5/2/23
-                        function checkIfDuplicateExists(arr) {
-                            return new Set(arr).size != arr.length;
-                        }
-
 
                         if (trimrow.indexOf("") !== -1) {
                             helper.showToast(
@@ -97,21 +93,22 @@
                             compEvent1.setParams({ "checkButton": true });
                             compEvent1.fire();
 
-                        } else if (checkIfDuplicateExists(trimrow)) {
+                        }
+                        else if (checkIfDuplicateExists(trimrow)) {
                             var compEvent = component.getEvent("disableNextButton");
                             compEvent.setParams({ "checkButton": true });
                             compEvent.fire();
                             helper.showToast("Info", "Info!", "Please remove same api Name in Header");
-
-                        }
-                        else {
+                        } else {
                             var compEvent1 = component.getEvent("disableNextButton");
                             compEvent1.setParams({ "checkButton": false });
                             compEvent1.fire();
 
                         }
 
-
+                        function checkIfDuplicateExists(arr) {
+                            return new Set(arr).size != arr.length;
+                        }
                         //jenish gangani 3/2/23
 
 

@@ -67,8 +67,22 @@
     background-color: #3c4ca3 !important;
 }
 
+.THIS .comments-icn {
+    --sds-c-icon-color-foreground-default: rgb(255, 254, 253);
+}
+
+.THIS .a {
+    color: black;
+}
 
 /* --------------------------------------------------jenish gangani */
+.THIS .secoundColour {
+    color: white !important;
+}
+
+.THIS .thirdColour {
+    color: white !important;
+}
 
 .THIS .slds-tabs--path .slds-is-current {
     background-color: #3c4ca3 !important;
@@ -80,6 +94,7 @@
 
 .THIS .slds-tabs_path .slds-is-current+.slds-is-incomplete::before {
     background-color: #3c4ca3 !important;
+
 }
 
 .THIS .slds-tabs--path .slds-is-current+.slds-is-incomplete::before {

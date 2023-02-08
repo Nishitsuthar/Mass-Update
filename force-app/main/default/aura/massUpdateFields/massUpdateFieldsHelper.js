@@ -127,11 +127,13 @@
         else {
             component.set("v.IsSpinner", true);
             var selectedStep = event.getSource().get("v.value");
-            console.log('selectedStep'+ selectedStep);
+            console.log('selectedStep' + selectedStep);
             // ----------jenish gangani
             var toggleIndicatorCurrent = component.find("step1Indicator");
             $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
             $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
+            var secoundColour = component.find("secoundColour");
+            $A.util.addClass(secoundColour, 'secoundColour');
             var toggleIndicatorNext = component.find("step2Indicator");
             $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
             $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
