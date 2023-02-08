@@ -9,9 +9,6 @@
     <aura:attribute name="label" type="String" default=""/>
     <aura:attribute name="IconName" type="String" default=""/>
     <aura:attribute name="fieldList" type="SObject" />
-
-    <aura:attribute name="apiListofObject" type="object[]" />
-
     <aura:attribute name="ObjectListMain" type="List" />
     <aura:attribute name="isSelectAll" type="boolean" default="false"/>
     <aura:attribute name="visibileInputBox" type="Boolean" default="false" />
@@ -25,6 +22,7 @@
 
 
     <!-- jenish ganganai 2/2/23 -->
+    <aura:attribute name="apiListofObject" type="object[]" />
     <aura:attribute name="progress" type="Integer" default="0"/>
     <aura:attribute name="fileName" type="String" default="No File Selected.." />
      <!-- jenish gangani 2/2/23 -->
@@ -58,10 +56,6 @@
     <aura:attribute name="FieldMappingDeleteButton" type="boolean" default="false"/>
           <!-- jenish ganganai 2/2/23 -->
 
-          <!-- jenish gangani 7/2/23 -->
-    <aura:handler name="disableNextButton" event="c:disableButtonEvent" action="{!c.handleNextButton}" />
-          <!-- jenish gangani 7/2/23 -->
-
     
     <aura:if isTrue="{!v.finished == false}">
         <div>
@@ -72,11 +66,54 @@
                             <div class="slds-grid slds-path__scroller-container">
                                 <div class="slds-path__scroller" role="application">
                                     <div class="slds-path__scroller_inner">
-                                        <lightning:progressIndicator aura:id="path" currentStep="{!v.currentStep}" type="path" variant="base">
-                                            <lightning:progressStep label="Drag And Drop CSV File" value="Step1" />  
+
+
+                                            <!-- Progress Bar-->
+                                        <div class="slds-grid slds-p-left_medium slds-p-right_medium">
+                                            <div class="slds-tabs--path" role="application">
+                                                <ul class="slds-tabs--path__nav" role="tablist">
+                                                    <li aura:id="step1Indicator"  class="slds-tabs--path__item slds-is-current" role="presentation" >
+                                                        <a class="slds-tabs--path__link" id="tabs-path-2326" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" aria-live="assertive">
+                                                            <span class="slds-tabs--path__stage">
+                                                                <lightning:icon iconName="utility:check  " size="x-small" alternativeText="Indicates approval"/>
+                                                            </span>
+                                                            <span class="slds-tabs--path__title" style="color:black;"><div class="">Drag And Drop CSV File</div></span>
+                                                        </a>
+                                                    </li>
+                                                    <li aura:id="step2Indicator"  class="slds-tabs--path__item slds-is-incomplete" role="presentation">
+                                                        <a class="slds-tabs--path__link" id="tabs-path-2327" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" aria-live="assertive">
+                                                            <span class="slds-tabs--path__stage">
+                                                                <lightning:icon iconName="utility:check  " size="x-small" alternativeText="Indicates approval"/>
+                                                            </span>
+                                                            <span class="slds-tabs--path__title" style="color:black;"><div class="">Fields Mapping</div></span>
+                                                        </a>
+                                                    </li>
+                                                    <li aura:id="step3Indicator" value="step3" class="slds-tabs--path__item slds-is-incomplete" role="presentation">      
+                                                        <a class="slds-tabs--path__link" id="tabs-path-2328" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" aria-live="assertive">
+                                                            <span class="slds-tabs--path__stage">
+                                                                <lightning:icon iconName="utility:check  " size="x-small" alternativeText="Indicates approval"/>
+                                                            </span>
+                                                            <span class="slds-tabs--path__title" style="color:black !important;"><div class="">Update Fields</div></span>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!-- End of Progress Bar -->
+                                        <!-- <div class="slds-align_absolute-center" style="height: 5rem;">
+                                        <lightning:button onclick="{!c.changePath}" label="Update Path"/>
+                                        </div> -->
+
+
+
+
+
+
+                                        <!-- <lightning:progressIndicator  aura:id="path" currentStep="{!v.currentStep}" type="path" variant="base">
+                                            <lightning:progressStep label="Drag And Drop CSV File" value="Step1"/>  
                                             <lightning:progressStep label="Fields Mapping" value="Step2" />
                                             <lightning:progressStep label="Update Fields" value="Step3" />
-                                        </lightning:progressIndicator>
+                                        </lightning:progressIndicator>  -->
                                     </div>
                                 </div>
                             </div>
@@ -463,4 +500,8 @@
             </div>
         </lightning:card>
     </aura:if>
+
+
+
+    
 </aura:component>

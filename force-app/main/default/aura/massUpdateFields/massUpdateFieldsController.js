@@ -14,6 +14,17 @@
         $A.util.addClass(forclose, 'slds-is-close');
         $A.util.removeClass(forclose, 'slds-is-open');
     },
+    
+    changePath: function (component, event, helper) {
+        //Set the progress bar indicator for Details to complete
+        var toggleIndicatorCurrent = component.find("step1Indicator");
+        $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
+        $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
+        //Set the progress bar indicator for Account selection to current
+        var toggleIndicatorNext = component.find("step2Indicator");
+        $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
+        $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
+    },
 
     // function for clear the Record Selection 
     clear: function (component, event, helper) {
@@ -71,8 +82,18 @@
     },
 
     previousClikButton: function (component, event, helper) {
+        console.log('previousClikButton');
         var selectedStep = event.getSource().get("v.value");
         console.log('selectstep=====' + selectedStep);
+        // -----------------------------jenish gangani 8/2/23
+        var toggleIndicatorNext = component.find("step2Indicator");
+        $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
+        $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
+        var toggleIndicatorCurrent = component.find("step1Indicator");
+        $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
+        $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
+        
+        // -----------------------------jenish gangani 8/2/23
         var nextStep = selectedStep == 'Step2' ? 'Step1' : 'finished';
 
         if (nextStep == 'finished') {
@@ -92,6 +113,17 @@
 
     PreviousStep2: function (component, event, helper) {
         var selectedStep = event.getSource().get("v.value");
+        // --------------------------------------------jenish gangani
+        var toggleIndicatorNext = component.find("step3Indicator");
+        $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
+        $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
+        var toggleIndicatorCurrent = component.find("step2Indicator");
+        $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
+        $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
+       
+        // --------------------------------------------jenish gangani
+
+
         var nextStep = selectedStep == 'Step3' ? 'Step2' : 'finished';
 
         if (nextStep == 'finished') {
@@ -130,6 +162,15 @@
 
         var tablePushDataList = component.get('v.tableListData');
         var sfPushData = component.get('v.FieldToUpdateList');
+        // ------------------------------jenish gangani
+            var toggleIndicatorCurrent = component.find("step2Indicator");
+            $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
+            $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
+            var toggleIndicatorNext = component.find("step3Indicator");
+            $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
+            $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
+        // ------------------------------jenish gangani
+
 
         if (tablePushDataList.length < 1 && sfPushData.length < 1) {
             helper.showToast(component, "Info", "Info!", "Please Select Atleast One Condition and One Mapping Field");
@@ -141,6 +182,7 @@
             helper.showToast(component, "Error", "Error!", "Please Select All Fields");
         } else if (validateSelect) {
             var selectedStep = event.getSource().get("v.value");
+
             var nextStep = selectedStep == 'Step2' ? 'Step3' : 'finished';
 
             if (nextStep == 'finished') {
@@ -189,8 +231,9 @@
     },
 
     //* jenish gangani 7/2/23
-    handleNextButton: function(component, event, helper){
+    handleNextButton: function (component, event, helper) {
         var getEvent = event.getParam("checkButton");
         component.set("v.stepOneNextButton", getEvent);
-    }
+    },
+
 })

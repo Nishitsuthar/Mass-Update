@@ -80,7 +80,7 @@
                 console.log('aass::' + response.getReturnValue().hasOwnProperty('pairWrapperList'));
                 console.log('aass::', typeof (response.getReturnValue()));
                 // console.log(response.getReturnValue()[0].apiNameList);
-                // console.log(response.getReturnValue()[0].pairWrapperList);
+                console.log(response.getReturnValue()[0].pairWrapperList);
                 component.set("v.fieldList", response.getReturnValue()[0].pairWrapperList);
                 component.set("v.apiListofObject", response.getReturnValue()[0].apiNameList);
 
@@ -88,18 +88,18 @@
                 var apiList = component.get("v.apiListofObject")
                 console.log('apiame::' + apiList);
                 // apiList = apiList.toUpperCase();
-                var headerData = component.get("v.header");
-                console.log('headerData:::' + headerData);
-                let a = apiList.includes(headerData[0]);
-                console.log('a' + a);
+                // var headerData = component.get("v.header");
+                // console.log('headerData:::' + headerData);
+                // let a = apiList.includes(headerData[0]);
+                // console.log('a' + a);
                 // to check when header is not avalible in csv file 
-                if (!apiList.includes(headerData[0])) {
-                    helper.showToast(component, "Info", "Info!", "Check Your first Recode Or Object");
-                    component.set("v.stepOneNextButton", true);
-                } else {
-                    component.set("v.stepOneNextButton", false);
+                // if (!apiList.includes(headerData[0])) {
+                //     helper.showToast(component, "Info", "Info!", "Check Your first Recode Or Object");
+                //     component.set("v.stepOneNextButton", true);
+                // } else {
+                //     component.set("v.stepOneNextButton", false);
 
-                }
+                // }
 
             } else {
                 component.set("v.IsSpinner", false);
@@ -113,13 +113,30 @@
     callNexthandle: function (component, event, helper) {
         console.log('table Data=====' + component.get("v.tabledata"));
         console.log('length tab data ======' + component.get("v.tabledata").length);
+        var apiList = component.get('v.apiListofObject');
+        var headerData = component.get("v.header");
+        // headerData[0] = headerData[0].toUpperCase();
         if (component.get("v.tabledata").length == 0) {
             helper.showToast(component, "Info", "Info!", "Please Upload File");
         } else if (component.get("v.selectedObject") == '') {
             helper.showToast(component, "Info", "Info!", "Please Select Object First");
-        } else {
+        }
+        else if (!apiList.includes(headerData[0].toUpperCase())) {
+            helper.showToast(component, "Info", "Info!", "Check Your first Recode Or Object");
+        }
+        else {
             component.set("v.IsSpinner", true);
             var selectedStep = event.getSource().get("v.value");
+            console.log('selectedStep'+ selectedStep);
+            // ----------jenish gangani
+            var toggleIndicatorCurrent = component.find("step1Indicator");
+            $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
+            $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
+            var toggleIndicatorNext = component.find("step2Indicator");
+            $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
+            $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
+            // ----------jenish gangani
+
             var nextStep = selectedStep == 'Step1' ? 'Step2' : 'finished';
 
             var fieldToUpdateList = [];
