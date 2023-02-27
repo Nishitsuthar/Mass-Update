@@ -490,6 +490,146 @@
         var tablePushDataListJson = JSON.stringify(tablePushDataList);
         var sfPushDataListJson = JSON.stringify(sfPushData);
 
+
+        // --------------------------------------------------- jenish gangani 27/02
+        let IndexFieldCSV = new Map();
+
+        for (let i = 0; i < headerData.length; i++) {
+            IndexFieldCSV.set(headerData[i], i);
+        }
+
+        let dataList = JSON.parse(tableDataString);
+        let tablePushDataListJsonDeserialize = JSON.parse(tablePushDataListJson);
+        let FieldToUpdateListWpr = JSON.parse(sfPushDataListJson);
+
+        console.log('IndexFieldCSV=====' + IndexFieldCSV);
+        console.log('dataList 2nd======' + dataList);
+        console.log('tablePushDataListJsonDeserialize 2nd======' + tablePushDataListJsonDeserialize);
+        console.log('FieldToUpdateListWpr 2nd =====' + FieldToUpdateListWpr);
+
+
+
+        // var objSchema = sforce.connection.describeSObject('Account');
+        // console.log('objectSchema==>' + objSchema);
+
+
+
+        var keyValueMap = new Map();
+        var csvAllDataMap = new Map();
+        var selectedListOfFields = selectedFieldsListArray;
+
+        for (let ucv of tablePushDataListJsonDeserialize) {
+            keyValueMap.set(ucv.SObjectField, new Set());
+        }
+        console.log('121== keyvalueMap==>' + keyValueMap);
+
+        if (!selectedListOfFields.includes('Id')) {
+            selectedListOfFields.push('Id');
+        }
+        console.log('selected field===' + selectedListOfFields);
+
+        let mnList = [];
+        let j = 0;
+        let strKey;
+        var strValue = new Map();
+        let k = 0;
+
+        for (let data of dataList) {
+            strKey = '';
+            strValue = new Map();
+            k = 0;
+            data = data.trim();
+            if (data !== '') {
+                if (data.endsWith(',')) {
+                    data += ' ';
+                }
+                // let StringData = data.split(',(?=(?:[^"]"[^"]")[^"]$)');
+                // let stringData = data.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                let StringData = data.split(",");
+
+                console.log('StringData===>155==>' + StringData);
+                console.log('valu pf string data==>' + StringData[0]);
+                console.log('string Data===>' + typeof (StringData));
+                for (let ucv of tablePushDataListJsonDeserialize) {
+                    console.log('IndexFieldCSV.get(ucv.csvfield)===148==>' + IndexFieldCSV.get(ucv.csvfield));
+                    if (IndexFieldCSV.get(ucv.csvfield) !== undefined) {
+                        if (keyValueMap.has(ucv.SObjectField)) {
+                            // if (true) {
+                            // d.fields.getMap().get(ucv.SObjectField).getDescribe().isUpdateable() && d.fields.getMap().get(ucv.SObjectField).getDescribe().isAccessible()
+                            // let fieldType = String(d.fields.getMap().get(ucv.SObjectField).getDescribe().getType());
+                            let fieldType = 'String';
+                            // console.log('field type-->'+ fieldType);
+                            let celldata = StringData[IndexFieldCSV.get(ucv.csvfield)];
+                            if (fieldType === 'DATE') {
+                                strKey += String(date.parse(celldata)).replace(/\s\d{2}:\d{2}:\d{2}/, "").trim() + '^';
+                            } else {
+                                if (celldata.trim().replace(/"/g, '') && celldata.trim().replace(/"/g, '')) {
+                                    // console.log(celldata.trim().removeStart('"').removeEnd('"'));
+                                    strKey += celldata.trim() + '^';
+                                    console.log('strKey===161==>', strKey);
+                                } else {
+                                    strKey += celldata.trim() + '^';
+                                    console.log('strKey===164==>', strKey);
+                                }
+                            }
+                            keyValueMap.get(ucv.SObjectField).add(celldata.trim());
+                            console.log('keyValueMap====>',keyValueMap);
+                            // }
+                        }
+                    }
+                }
+
+                for (let field of FieldToUpdateListWpr) {
+                    if (IndexFieldCSV.get(field.csvfield) != null) {
+                        let celldata = StringData[IndexFieldCSV.get(field.csvfield)].trim();
+                        if (celldata.replace(/"/g, "") && celldata.replace(/"/g, "")) {
+                            strValue.set('CSV' + field.csvfield, celldata.replace(/""/g, ''));
+                        } else {
+                            strValue.set('CSV' + field.csvfield, celldata);
+                        }
+                    }
+                }
+                console.log('192 ==> strValue ==> ', strValue);
+                csvAllDataMap.set(strKey.slice(0, -1), strValue);
+                console.log('csvAllDataMap===>', csvAllDataMap);
+
+            }
+            // var csvdata = JSON.stringify(csvAllDataMap);
+
+
+        }
+        
+        // var keyValueMap1 = keyValueMap;
+        
+        // console.log('keyValueMap1===>', keyValueMap1);
+        /* var obj1 = Object.fromEntries(keyValueMap);
+        var keyValueMap1 = JSON.stringify(obj1);
+
+        var obj2 = Object.fromEntries(csvAllDataMap);
+        var csvAllDataMap1 = JSON.stringify(obj2); */
+
+        var obj1 = {};
+        for (let [key, value] of keyValueMap) {
+            obj1[key] = Array.from(value);
+        }
+        var keyValueMap1 = JSON.stringify(obj1);
+
+        var obj2 = {};
+        for (let [key, value] of csvAllDataMap) {
+            obj2[key] = Array.from(value);
+        }
+        var csvAllDataMap1 = JSON.stringify(obj2);
+
+        console.log('keyValueMap of the ====>' + keyValueMap1);
+        console.log('csvAllDataMap of the ===>' + csvAllDataMap1);
+        
+        console.log('keyValueMap of the ====>'+ keyValueMap1);
+        console.log('csvAllDataMap of the ===>'+ csvAllDataMap1);
+
+        // --------------------------------------------------- jenish gangani 27/02
+
+
+
         action.setParams({
             'selectedListOfFields': selectedFieldsListArray,
             'selectObjectName': selectObjectName,
@@ -497,6 +637,8 @@
             'tableData': tableDataString,
             'tablePushDataListJson': tablePushDataListJson,
             'FieldToUpdateList': sfPushDataListJson,
+            'keyValueMap': keyValueMap1,
+            'csvAllDataMap': csvAllDataMap1,
         });
 
         action.setCallback(this, function (response) {
@@ -505,7 +647,7 @@
             if (resultFull === 'SUCCESS' || resultFull === 'DRAFT') {
                 var res = response.getReturnValue();
                 var result = res[0];
-                helper.getSobjectList(component, event, helper, result['theMap'], result['theQuery'], selectObjectName, tablePushDataListJson, headerData, sfPushDataListJson, selectedFieldsListArray);
+                // helper.getSobjectList(component, event, helper, result['theMap'], result['theQuery'], selectObjectName, tablePushDataListJson, headerData, sfPushDataListJson, selectedFieldsListArray);
 
             } else {
                 component.set("v.IsSpinner", false);
@@ -522,7 +664,8 @@
         var sfPushData = component.get('v.FieldToUpdateList');
         var selectObjectName = component.get("v.selectedObject");
         var sfPushDataListJson = JSON.stringify(sfPushData);
-
+        console.log('data==');
+        console.log({ data });
         action.setParams({
             'data': data,
             'FieldToUpdateList': sfPushDataListJson,
