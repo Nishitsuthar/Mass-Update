@@ -1,4 +1,7 @@
 ({
+    onChange: function (component, event, helper) {
+        component.set("v.operation", component.find('select').get('v.value'));
+    },
     doinit: function (component, event, helper) {
         component.set("v.IsSpinner", true);
         helper.searchHelper(component, event, helper);
@@ -7,7 +10,6 @@
 
         console.log('object main====>' + component.get("v.ObjectListMain"));
     },
-
     onblur: function (component, event, helper) {
         component.set("v.listOfSearchRecords", null);
         var forclose = component.find("searchRes");
@@ -28,7 +30,7 @@
     onChangeObject: function (component, event, helper) {
         helper.onChangeObject(component, event, helper);
     },
-
+    //    first next button
     callNexthandle: function (component, event, helper) {
         helper.callNexthandle(component, event, helper);
     },
@@ -86,6 +88,11 @@
 
         // -----------------------------jenish gangani 8/2/23
         var nextStep = selectedStep == 'Step2' ? 'Step1' : 'finished';
+        component.set("v.progress", '100');
+        console.log('file name==>' + component.get('v.fileName'));
+
+        // component.set("v.fileName", '100');
+
 
         if (nextStep == 'finished') {
             component.set("v.finished", nextStep);
@@ -125,6 +132,7 @@
         } else {
             component.set("v.currentStep", nextStep);
         }
+
     },
 
     addRow: function (component, event, helper) {
@@ -142,21 +150,33 @@
     deleteMapRow: function (component, event, helper) {
         helper.deleteMapRowRecord(component, event, helper);
     },
-
+    // second next button
     callNextButton: function (component, event, helper) {
 
         console.log('next Button called');
         var validateSelect;
+        console.log('value of second Button for the:::::' + component.find("selectDropValues"));
         if (component.find("selectDropValues") != undefined) {
             validateSelect = component.find("selectDropValues").reduce(function (validSoFar, inputCmp) {
+                console.log('validSsofar -- > ', validSoFar);
+                console.log('inputCmp -- > ', { inputCmp });
+
                 inputCmp.showHelpMessageIfInvalid();
                 return validSoFar && inputCmp.get('v.validity').valid;
             }, true);
         }
+        console.log('validateSelect::::' + validateSelect);
 
         var tablePushDataList = component.get('v.tableListData');
+        // ----------------------------------------jenish gangani 9/2
+        console.log('tablePushDataList:::' + JSON.stringify(tablePushDataList));
+        console.log('tablePushDataList length:::' + (tablePushDataList.length));
         var sfPushData = component.get('v.FieldToUpdateList');
-        // ------------------------------jenish gangani
+        console.log('sfPushData:::' + JSON.stringify(sfPushData));
+        console.log('sfPushData length:::' + (sfPushData.length));
+        // ----------------------------------------jenish gangani 9/2
+
+        // ------------------------------jenish gangani 7/2  to change the progressbar movement
         var toggleIndicatorCurrent = component.find("step2Indicator");
         $A.util.removeClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-current');
         $A.util.addClass(toggleIndicatorCurrent, 'slds-tabs--path__item slds-is-complete');
@@ -166,7 +186,7 @@
         var toggleIndicatorNext = component.find("step3Indicator");
         $A.util.removeClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-incomplete');
         $A.util.addClass(toggleIndicatorNext, 'slds-tabs--path__item slds-is-current');
-        // ------------------------------jenish gangani
+        // ------------------------------jenish gangani 7/2
 
 
         if (tablePushDataList.length < 1 && sfPushData.length < 1) {
@@ -179,12 +199,25 @@
             helper.showToast(component, "Error", "Error!", "Please Select All Fields");
         } else if (validateSelect) {
             var selectedStep = event.getSource().get("v.value");
+            console.log('selecteStep::::' + selectedStep);
 
             var nextStep = selectedStep == 'Step2' ? 'Step3' : 'finished';
+            // ------------ jenish gangani  get the opration value 
+            var operation = component.get('v.operation');
+            console.log('operation value::::' + operation);
+            // ------------ jenish gangani  get the opration value 
 
             if (nextStep == 'finished') {
                 component.set("v.finished", nextStep);
-            } else {
+            }
+            // ---------------- jenish gangani 9/2
+            else if (operation == 'insert') {
+                helper.insertRecord(component, event, helper);
+                component.set("v.currentStep", nextStep);
+            }
+            // ---------------- jenish gangani 9/2
+
+            else {
                 helper.nextWriteQuery(component, event, helper);
                 component.set("v.currentStep", nextStep);
             }
@@ -201,6 +234,19 @@
             component.set("v.finished", true);
         }
     },
+
+    // jenish gangani 11/02
+    saveRecordsToSFForInsert: function (component, event, helper) {
+        var selectedStep = event.getSource().get("v.value");
+        var nextStep = selectedStep == 'Step3' ? 'finished' : 'finished';
+
+        if (nextStep == 'finished') {
+            helper.saveRecordsToSFForInsert(component, event, helper);
+            component.set("v.currentStep", nextStep);
+            component.set("v.finished", true);
+        }
+    },
+    // jenish gangani 11/02
 
     nextPageRecord: function (component, event, helper) {
         var pageNumber = component.get('v.pageNumber');
@@ -228,9 +274,20 @@
     },
 
     //* jenish gangani 7/2/23
+
+
     handleNextButton: function (component, event, helper) {
-        var getEvent = event.getParam("checkButton");
-        component.set("v.stepOneNextButton", getEvent);
+        console.log('nextButton==>' + event.getParam('value'));
+        component.set("v.stepOneNextButton", event.getParam('value'));
     },
+    handleHeader: function (component, event, helper) {
+        component.set("v.header", event.getParam('value'));
+    },
+    handleTableData: function (component, event, helper) {
+        component.set("v.tabledata", event.getParam('value'));
+    },
+    handlefileValue: function (component, event, helper) {
+        component.set("v.fileName", event.getParam('value'));
+    }
 
 })

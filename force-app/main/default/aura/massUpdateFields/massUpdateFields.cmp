@@ -23,8 +23,9 @@
 
     <!-- jenish ganganai 2/2/23 -->
     <aura:attribute name="apiListofObject" type="object[]" />
-    <aura:attribute name="progress" type="Integer" default="0"/>
+    <aura:attribute name="progress" type="Integer" />
     <aura:attribute name="fileName" type="String" default="No File Selected.." />
+    <aura:attribute name="operation" type="String" />  
      <!-- jenish gangani 2/2/23 -->
 
     <aura:attribute name="allDataList" type="object[]" />
@@ -60,6 +61,10 @@
     <aura:handler name="disableNextButton" event="c:disableButtonEvent" action="{!c.handleNextButton}" />
           <!-- jenish gangani 7/2/23 -->
 
+          <!-- jenish gangani 22/2 -->
+
+          <!-- jenish gangani 22/2 -->
+
     
     <aura:if isTrue="{!v.finished == false}">
         <div>
@@ -87,7 +92,7 @@
                                                     <li aura:id="step2Indicator"  class="slds-tabs--path__item slds-is-incomplete" role="presentation">
                                                         <a class="slds-tabs--path__link" id="tabs-path-2327" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" aria-live="assertive">
                                                             <span class="slds-tabs--path__stage">
-                                                                <lightning:icon iconName="utility:check" size="x-small" class="comments-icn" alternativeText="Indicates approval"/>
+                                                                <lightning:icon iconName="utility:check" class="comments-icn" size="x-small" alternativeText="Indicates approval"/>
                                                             </span>
                                                             <span class="slds-tabs--path__title" style="color:rgb(0, 0, 0);"><div aura:id="secoundColour">Fields Mapping</div></span>
                                                         </a>
@@ -95,7 +100,7 @@
                                                     <li aura:id="step3Indicator" value="step3" class="slds-tabs--path__item slds-is-incomplete" role="presentation">      
                                                         <a class="slds-tabs--path__link" id="tabs-path-2328" aria-controls="content-path-1" aria-selected="false" tabindex="-1" role="tab" href="javascript:void(0);" aria-live="assertive">
                                                             <span class="slds-tabs--path__stage">
-                                                                <lightning:icon iconName="utility:check" size="x-small" class="comments-icn" alternativeText="Indicates approval"/>
+                                                                <lightning:icon iconName="utility:check" class="comments-icn" size="x-small" alternativeText="Indicates approval"/>
                                                             </span>
                                                             <span class="slds-tabs--path__title" style="color:rgb(0, 0, 0) !important;"><div aura:id="thirdColour">Update Fields</div></span>
                                                         </a>
@@ -107,6 +112,12 @@
                                         <!-- <div class="slds-align_absolute-center" style="height: 5rem;">
                                         <lightning:button onclick="{!c.changePath}" label="Update Path"/>
                                         </div> -->
+
+
+
+
+
+
                                         <!-- <lightning:progressIndicator  aura:id="path" currentStep="{!v.currentStep}" type="path" variant="base">
                                             <lightning:progressStep label="Drag And Drop CSV File" value="Step1"/>  
                                             <lightning:progressStep label="Fields Mapping" value="Step2" />
@@ -170,13 +181,31 @@
                             </aura:if>
                         </div>
                         <div class="slds-p-around_medium" style="width:70%;margin-left:15%;">
-                            <c:importCsvFile  header="{!v.header}" tabledata="{!v.tabledata}"  progress="{!v.progress}" fileName ="{!v.fileName}"/>
+                            
+                            <!-- jenish gangani 8/2/23 -->
+                            <div class="slds-float_right slds-col">
+                                <lightning:helptext content="Select your Operation."/>
+                            </div>
+                            <lightning:select aura:id="select" name="select" label="Select a operation:" value="{!v.operation}" onchange="{! c.onChange }">
+                                <!-- required="true" -->
+                                        <option value="">choose one...</option>
+                                        <option value="insert">insert</option>
+                                        <option value="update">update</option>
+                                        </lightning:select>
+                                    <br/>
+
+                            <!--* Nishit Suthar 20/02/23 : Added new LWC Component -->
+                            <c:new_upload_btn onfilevalue="{!c.handlefileValue}" fileName="{!v.fileName}" progress='{!v.progress}' onpassvalue="{!c.handleNextButton}" onheader="{!c.handleHeader}" ontabledata="{!c.handleTableData}"/>
+                            
+                             <!-- jenish gangani 8/2/23  -->
+                            <!-- <c:importCsvFile   header="{!v.header}" tabledata="{!v.tabledata}"  progress="{!v.progress}" fileName ="{!v.fileName}"/> -->
                             <!-- <lightning:fileUpload aura:id = "file"
                                     onuploadfinished="{!c.showcsvdata}"
                                     name = "file"
                                     accept = ".csv"
                                     label = "Please upload file"
                                     multiple = "false" /> -->
+                                 
                             <br/>
                             
                             <div class="slds-float_right slds-col">
@@ -237,7 +266,12 @@
                             </section>
                         </aura:if>
                     </div>
-                    <div class="slds-p-around--medium" style="width:70%;margin-left:15%;">                        
+
+                    <!-- 8/2/23   jenish ganagani -->
+                   
+                    <div class="slds-p-around--medium" style="width:70%;margin-left:15%;">  
+                        <!-- insert and update condition -->
+                        <aura:if isTrue="{!v.operation=='update'}">               
                         <h1 style="font-size:18px"><b>Data Matching Criteria:</b>
                             <aura:if isTrue="{!greaterthan(v.header.length,v.tableListData.length)}">
                                 <div class="slds-float_right">Add Fields&nbsp;&nbsp;
@@ -291,6 +325,7 @@
                                 </tbody>
                             </aura:iteration>    
                         </table>
+                        </aura:if>       
                         <div class="slds-clearfix slds-grid slds-gutter">
                             <div class="slds-align-left slds-col">
                                 <!-- <aura:if isTrue="{!v.SelectFieldHelp}">
@@ -305,7 +340,9 @@
                                 </aura:if> -->
                             </div> 
                         </div>
+                       
                         <br/><br/>
+                         
                         <!--Mapp Fileds-->
                         <h1 style="font-size:18px"><b>CSV &amp; Salesforce Field Mapping:</b> 
                             <aura:if isTrue="{!greaterthan(v.header.length,v.FieldToUpdateList.length)}">
@@ -352,6 +389,7 @@
                             </tbody>
                         </table><br/><br/>
                         <!-- Salesofrce Selected Object Fileds List -->
+                        <aura:if  isTrue="{!v.operation=='update'}">
                         <h1 style="font-size:18px"><b>Display Salesforce fields:</b></h1><br/>
                         <table class="slds-table slds-table_cell-buffer slds-table_bordered">
                             <thead>
@@ -416,6 +454,7 @@
                                 </aura:iteration>
                             </tbody>
                         </table><br/>
+                        </aura:if>
                         {!v.currentStep}
                         <div class="slds-clearfix">
                             <div class="slds-float_right"> 
@@ -476,6 +515,9 @@
                                 <lightning:button variant="brand" value="{!v.currentStep}" label="Previous" title="Previous" onclick="{! c.PreviousStep2 }" /> 
                                 <aura:if isTrue="{!greaterthan(v.sfId,0)}">
                                     <lightning:button variant="brand" value="{!v.currentStep}" label="Update" title="Update" onclick="{! c.saveRecordsToSF }"/>
+                                </aura:if>
+                                <aura:if isTrue="{!v.operation=='insert'}">
+                                    <lightning:button variant="brand" value="{!v.currentStep}" label="insert" title="insert" onclick="{! c.saveRecordsToSFForInsert }"/>
                                 </aura:if>
                             </div>
                         </div>
