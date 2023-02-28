@@ -52,6 +52,7 @@ global class UpdateSobjectBatchable implements Database.Batchable<sObject>, Data
             List<SObject> sList = (database.query(querySuccess));
             SObjectType r = ((SObject)(Type.forName('Schema.'+sObjectName).newInstance())).getSObjectType();
             DescribeSObjectResult d = r.getDescribe();
+            System.debug('successList==='+sList);
             for(SObject sobj : sList){
                 
                 for(String csvName : csvfield){ 
@@ -81,7 +82,9 @@ global class UpdateSobjectBatchable implements Database.Batchable<sObject>, Data
             
             
             String queryError = ' SELECT ' + strcsv + ' FROM ' + sObjectName + ' WHERE Id =: errorList ';
+
             List<SObject> eList = (database.query(queryError));
+            System.debug('eList=='+eList);         
             
             for(SObject sobj : eList){
                 for(String csvName : csvfield){

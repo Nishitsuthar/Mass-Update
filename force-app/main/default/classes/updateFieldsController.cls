@@ -95,10 +95,15 @@ public with sharing class updateFieldsController {
         System.debug('keyValueMap12====='+keyValueMap);
         System.debug('csvAllDataMap12====='+csvAllDataMap);
 
-        Map<String, Set<String>> b = (Map<String,Set<String>>) JSON.deserialize(keyValueMap, Map<String,Set<String>>.class);
-        for (string s : b.keyset()) {
-            System.debug('value in B '+s);
-        }
+
+        Map<String, Set<String>> mapFromJson = (Map<String, Set<String>>) JSON.deserialize(keyValueMap, Map<String, Set<String>>.class);
+        System.debug('mapFromJson '+mapFromJson);
+
+        Map<String, Map<String,String>> dataObj = (Map<String, Map<String,String>>) JSON.deserialize(csvAllDataMap, Map<String, Map<String,String>>.class);
+        System.debug('dataObje '+dataObj);
+
+        // Convert the nested Map<String, Object> into a Map<String, Map<String, String>>
+
 
 
 
@@ -122,6 +127,7 @@ public with sharing class updateFieldsController {
 
         // Map<String,Set<String>> keyValueMap = (Map<String,Set<String>>) JSON.deserializeUntyped(keyValueMap12);
         // Map<String,Map<String,String>> csvAllDataMap = (Map<String,Map<String,String>>) JSON.deserializeUntyped(csvAllDataMap12);
+
 
         
         System.debug('IndexFieldCSV====='+ IndexFieldCSV);
@@ -255,32 +261,32 @@ public with sharing class updateFieldsController {
         //Getting schema of selected Object
    		
         integer i=0;
-        // for(String st1 : keyValueMap.keyset()){
-        //     String whereStr = '(';
-        //     String fieldType = String.valueOf(d.fields.getMap().get(st1).getDescribe().getType());        
-        //     for(String s : keyValueMap.get(st1)){
-        //         if(s != null && s != ''){
-        //         	if(fieldType == 'NUMBER' || fieldType == 'DOUBLE' || fieldType == 'Boolean' || fieldType == 'CURRENCY' || fieldType == 'DATETIME' || fieldType == 'PERCENT' || fieldType == 'TIME'){
-        //                 whereStr += s+',';
-        //             }else if(fieldType == 'DATE'){
-        //                 whereStr += String.valueOf(date.parse(s))+',';    
-        //             }else{
-        //                 if(s.contains('\'')){
-        //                     whereStr += '\''+s.replace('\'', '\\\'')+'\',';
-        //                 }else{
-        //                     whereStr += '\''+s+'\',';
-        //                 }
-        //             }
-        //         }
-        //     }
-        //     whereStr = whereStr.removeEnd(',') + ')';
-        //     if(i==0){
-        //         soqlQuer += st1 + ' IN ' + whereStr;
-        //     }else{
-        //         soqlQuer += ' AND ' + st1 + ' IN ' + whereStr;
-        //     }
-        //     i++;
-        // }
+        for(String st1 : mapFromJson.keyset()){
+            String whereStr = '(';
+            String fieldType = String.valueOf(d.fields.getMap().get(st1).getDescribe().getType());        
+            for(String s : mapFromJson.get(st1)){
+                if(s != null && s != ''){
+                	if(fieldType == 'NUMBER' || fieldType == 'DOUBLE' || fieldType == 'Boolean' || fieldType == 'CURRENCY' || fieldType == 'DATETIME' || fieldType == 'PERCENT' || fieldType == 'TIME'){
+                        whereStr += s+',';
+                    }else if(fieldType == 'DATE'){
+                        whereStr += String.valueOf(date.parse(s))+',';    
+                    }else{
+                        if(s.contains('\'')){
+                            whereStr += '\''+s.replace('\'', '\\\'')+'\',';
+                        }else{
+                            whereStr += '\''+s+'\',';
+                        }
+                    }
+                }
+            }
+            whereStr = whereStr.removeEnd(',') + ')';
+            if(i==0){
+                soqlQuer += st1 + ' IN ' + whereStr;
+            }else{
+                soqlQuer += ' AND ' + st1 + ' IN ' + whereStr;
+            }
+            i++;
+        }
         
         List<ContentWorkspace> ws = [SELECT Id, RootContentFolderId FROM ContentWorkspace WHERE Name = 'Mass Update' LIMIT 1];
         if(ws.isEmpty()){
@@ -294,8 +300,8 @@ public with sharing class updateFieldsController {
         }
         
         List<wrapDataList> listData = new List<wrapDataList>();
-        // listData.add(new wrapDataList(soqlQuer, csvAllDataMap));
-        // System.debug('daraaa==>'+csvAllDataMap);
+        listData.add(new wrapDataList(soqlQuer, dataObj));
+        System.debug('daraaa==>'+dataObj);
         System.debug('soq==>'+ soqlQuer);
         System.debug('ListData====='+listData);
         return listData;

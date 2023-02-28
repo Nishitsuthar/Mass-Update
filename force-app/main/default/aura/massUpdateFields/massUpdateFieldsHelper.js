@@ -547,11 +547,11 @@
                 // let stringData = data.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 let StringData = data.split(",");
 
-                console.log('StringData===>155==>' + StringData);
-                console.log('valu pf string data==>' + StringData[0]);
-                console.log('string Data===>' + typeof (StringData));
+                // console.log('StringData===>155==>' + StringData);
+                // console.log('valu pf string data==>' + StringData[0]);
+                // console.log('string Data===>' + typeof (StringData));
                 for (let ucv of tablePushDataListJsonDeserialize) {
-                    console.log('IndexFieldCSV.get(ucv.csvfield)===148==>' + IndexFieldCSV.get(ucv.csvfield));
+                    // console.log('IndexFieldCSV.get(ucv.csvfield)===148==>' + IndexFieldCSV.get(ucv.csvfield));
                     if (IndexFieldCSV.get(ucv.csvfield) !== undefined) {
                         if (keyValueMap.has(ucv.SObjectField)) {
                             // if (true) {
@@ -566,14 +566,14 @@
                                 if (celldata.trim().replace(/"/g, '') && celldata.trim().replace(/"/g, '')) {
                                     // console.log(celldata.trim().removeStart('"').removeEnd('"'));
                                     strKey += celldata.trim() + '^';
-                                    console.log('strKey===161==>', strKey);
+                                    // console.log('strKey===161==>', strKey);
                                 } else {
                                     strKey += celldata.trim() + '^';
-                                    console.log('strKey===164==>', strKey);
+                                    // console.log('strKey===164==>', strKey);
                                 }
                             }
                             keyValueMap.get(ucv.SObjectField).add(celldata.trim());
-                            console.log('keyValueMap====>',keyValueMap);
+                            // console.log('keyValueMap====>',keyValueMap);
                             // }
                         }
                     }
@@ -589,18 +589,18 @@
                         }
                     }
                 }
-                console.log('192 ==> strValue ==> ', strValue);
+                // console.log('192 ==> strValue ==> ', strValue);
                 csvAllDataMap.set(strKey.slice(0, -1), strValue);
-                console.log('csvAllDataMap===>', csvAllDataMap);
+                // console.log('csvAllDataMap===>', csvAllDataMap);
 
             }
             // var csvdata = JSON.stringify(csvAllDataMap);
 
 
         }
-        
+
         // var keyValueMap1 = keyValueMap;
-        
+
         // console.log('keyValueMap1===>', keyValueMap1);
         /* var obj1 = Object.fromEntries(keyValueMap);
         var keyValueMap1 = JSON.stringify(obj1);
@@ -614,17 +614,20 @@
         }
         var keyValueMap1 = JSON.stringify(obj1);
 
-        var obj2 = {};
-        for (let [key, value] of csvAllDataMap) {
-            obj2[key] = Array.from(value);
-        }
-        var csvAllDataMap1 = JSON.stringify(obj2);
+        const csvAllDataObject = {};
+        csvAllDataMap.forEach((value, key) => {
+            csvAllDataObject[key] = Object.fromEntries(value.entries());
+            // console.log('csvAllDataObject[key] ' + csvAllDataObject[key]);
 
-        console.log('keyValueMap of the ====>' + keyValueMap1);
-        console.log('csvAllDataMap of the ===>' + csvAllDataMap1);
-        
-        console.log('keyValueMap of the ====>'+ keyValueMap1);
-        console.log('csvAllDataMap of the ===>'+ csvAllDataMap1);
+        });
+        // var csvAllDataMap1 = JSON.stringify(obj2);
+        var csvAllDataMap1 = JSON.stringify(csvAllDataObject);
+
+        // console.log('keyValueMap of the ====>' + keyValueMap1);
+        // console.log('csvAllDataMap of the ===>' + csvAllDataMap1);
+
+        // console.log('keyValueMap of the ====>'+ keyValueMap1);
+        // console.log('csvAllDataMap of the ===>'+ csvAllDataMap1);
 
         // --------------------------------------------------- jenish gangani 27/02
 
@@ -647,9 +650,11 @@
             if (resultFull === 'SUCCESS' || resultFull === 'DRAFT') {
                 var res = response.getReturnValue();
                 var result = res[0];
-                // helper.getSobjectList(component, event, helper, result['theMap'], result['theQuery'], selectObjectName, tablePushDataListJson, headerData, sfPushDataListJson, selectedFieldsListArray);
+                console.log('res==>' + JSON.stringify(res[0]));
+                helper.getSobjectList(component, event, helper, result['theMap'], result['theQuery'], selectObjectName, tablePushDataListJson, headerData, sfPushDataListJson, selectedFieldsListArray);
 
             } else {
+                console.log('err ' + response.getError());
                 component.set("v.IsSpinner", false);
                 helper.showToast(component, "Error", "Failed!", "Error accur, Something went wrong nextWritequery");
             }
