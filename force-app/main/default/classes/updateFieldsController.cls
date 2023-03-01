@@ -860,6 +860,9 @@ public class pairWrapper1{
     }
     // -----------jenish gangani
 
+    public class testWrapper{
+        @AuraEnabled public List<sObject> sObjectList;
+    }
     
     public class uploadCsvFileJsonWrapper{
         @AuraEnabled public String csvfield{get; set;}  
