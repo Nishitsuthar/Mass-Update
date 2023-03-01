@@ -28,6 +28,12 @@
     <aura:attribute name="operation" type="String" />  
      <!-- jenish gangani 2/2/23 -->
 
+     <!--* Nishi Suthar 28/02/2023  -->
+     <aura:attribute name="schema" type="map" description="description"/>
+     <aura:attribute name="schema1" type="map" description="description"/>
+
+     <!--* Nishi Suthar 28/02/2023  -->
+
     <aura:attribute name="allDataList" type="object[]" />
     <aura:attribute name="addDeleteBoolean" type="boolean"  default="false"/>
     <aura:attribute name="tableListData" type="List"/>

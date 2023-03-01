@@ -67,12 +67,17 @@ public with sharing class updateFieldsController {
         }
         pairWrapper1 field1 = new pairWrapper1();
 
+        Map<String, Schema.SObjectField> fieldMap12 = Schema.getGlobalDescribe().get(ObjectName).getDescribe().fields.getMap();
+        
+        Schema.SObjectType sobj12 = Schema.getGlobalDescribe().get(ObjectName);
 
         field1.pairWrapperList = lstfieldname;
         field1.apiNameList = apiList;
-        DescribeSObjectResult result = Schema.getGlobalDescribe().get(ObjectName).getDescribe();
-        field1.fieldTypeData = JSON.serialize(result);
+        // field1.sobj11 = sobj12;
+        // field1.fieldMap1 = fieldMap12;
         
+        System.debug('fieldMap12==>'+ fieldMap12);
+        System.debug('sobj12==>'+sobj12);
         System.debug('lstfieldname===='+lstfieldname);
         System.debug('APiListName===='+apiList);
         apiNameAndList.add(field1);
@@ -145,7 +150,7 @@ public with sharing class updateFieldsController {
                 if(data.endsWith(',')) data += ' ';
                 
                 List<String> StringData = data.split(',(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)');
-                System.debug(StringData);
+                // System.debug(StringData);
                 // for(uploadCsvFileJsonWrapper ucv : tablePushDataListJsonDeserialize){
                 //     if(IndexFieldCSV.get(ucv.csvfield)!=null){
                 //         if(keyValueMap.containskey(ucv.SObjectField)){
@@ -182,13 +187,13 @@ public with sharing class updateFieldsController {
                         }                       
                     }
                 }
-                System.debug('180====>'+strKey);
+                // System.debug('180====>'+strKey);
                 String sInteger = String.valueOf(j);
                 csvAllDataMap.put(sInteger, strValue);
                
             }
-            System.debug('strValue::::::'+strValue);
-            System.debug('csvAllDataMap for the set query::::::'+csvAllDataMap);
+            // System.debug('strValue::::::'+strValue);
+            // System.debug('csvAllDataMap for the set query::::::'+csvAllDataMap);
              j++;
 
         }
@@ -507,7 +512,7 @@ public with sharing class updateFieldsController {
         
         List<wrapDataList> listData = new List<wrapDataList>();
         listData.add(new wrapDataList(soqlQuer, dataObj));
-        System.debug('daraaa==>'+dataObj);
+        System.debug('dataObj==>'+dataObj);
         System.debug('soq==>'+ soqlQuer);
         System.debug('ListData====='+listData);
         return listData;
@@ -717,7 +722,7 @@ public with sharing class updateFieldsController {
         
         for(Map<String,String> addMap : allData.values()){
             SObject sobj = sobj1.newSObject();
-            System.debug(FieldToUpdateListWpr);
+            // System.debug(FieldToUpdateListWpr);
             for(uploadCsvFileJsonWrapper field : FieldToUpdateListWpr){
                     if(addMap.get('CSV'+field.csvfield) != ''){
                         // if(sobj.Id == null){
@@ -753,7 +758,7 @@ public with sharing class updateFieldsController {
                             }
                             else{
                                 sobj.put(field.SObjectField, addMap.get('CSV'+field.csvfield));  
-                                System.debug(addMap.get('CSV'+field.csvfield));
+                                // System.debug(addMap.get('CSV'+field.csvfield));
                             }                            
                         }                        
                     }
@@ -762,6 +767,7 @@ public with sharing class updateFieldsController {
                 objList.add(sobj);    
             // }
         }
+        System.debug('objList==>'+ objList);
         return JSON.serialize(objList);
     }
 
@@ -833,8 +839,8 @@ public with sharing class updateFieldsController {
 public class pairWrapper1{
         @AuraEnabled public List<string> apiNameList{get; set;}
         @AuraEnabled public List<pairWrapper> pairWrapperList{get; set;}
-        @AuraEnabled public String fieldTypeData{get; set;}  
-
+        // @AuraEnabled public Map<String, Schema.SObjectField> fieldMap1{get; set;}
+        // @AuraEnabled public Schema.SObjectType sobj11{get; set;}
     }
     // -----------jenish gangani
 

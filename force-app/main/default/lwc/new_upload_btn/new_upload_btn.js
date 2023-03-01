@@ -149,20 +149,20 @@ export default class new_upload_btn extends LightningElement {
             const reader = new FileReader();
             reader.onload = (event) => {
                 const data = event.target.result;
-                console.log('data of xlsx==>' + data);
+                // console.log('data of xlsx==>' + data);
                 const workbook = XLSX.read(data, { type: 'binary' });
                 const sheetName = workbook.SheetNames[0];
                 let rowObject = XLSX.utils.sheet_to_csv(workbook.Sheets[sheetName], { defval: "" });
-                console.log('data of rowobject==>' + JSON.stringify(rowObject));
+                // console.log('data of rowobject==>' + JSON.stringify(rowObject));
                 var data1 = Papa.parse(rowObject, {
                     header: true,
                     skipEmptyLines: 'greedy'
                 });
-                console.log('data1 ' + JSON.stringify(data1));
+                // console.log('data1 ' + JSON.stringify(data1));
                 // var headerValue = Object.keys(rowObject[0]);
                 var headerValue = data1.meta.fields;
                 const rowData = data1.data;
-                console.log('rowData' + JSON.stringify(rowData));
+                // console.log('rowData' + JSON.stringify(rowData));
                 this.headerCheck(headerValue);
                 this.dataStoreTable(rowData);
             };
@@ -191,10 +191,10 @@ export default class new_upload_btn extends LightningElement {
             skipEmptyLines: 'greedy', // Add this line to skip empty lines
             complete: (results) => {
                 this._rows = results.data;
-                console.log('results ', JSON.parse(JSON.stringify(results)));
+                // console.log('results ', JSON.parse(JSON.stringify(results)));
                 this.loading = false;
                 let rowObj = results.data;
-                console.log('rowobjec==>' + JSON.parse(JSON.stringify(rowObj)));
+                // console.log('rowobjec==>' + JSON.parse(JSON.stringify(rowObj)));
                 let headerName = results.meta.fields;
                 this.headerCheck(headerName);
                 this.dataStoreTable(rowObj);
@@ -218,7 +218,7 @@ export default class new_upload_btn extends LightningElement {
         let newArray1 = newArray.map(str => str.replace('"', ''));
         let newArray2 = newArray1.map(str => str.replace(/\s/g, ''));
 
-        console.log('newArray' + newArray2);
+        // console.log('newArray' + newArray2);
         trimrow = newArray2;
         console.log('new open :::' + trimrow);
 
@@ -269,7 +269,7 @@ export default class new_upload_btn extends LightningElement {
         for (let i = 0; i < rowObj.length; i++) {
             arr2.push(Object.values(rowObj[i]));
         }
-        console.log('arr2 Name ' + arr2);
+        // console.log('arr2 Name ' + arr2);
         const newArray = arr2.map(subarray => subarray.join(','));
         let value = newArray;
         const event = new CustomEvent('tabledata', { detail: { value } });
@@ -286,7 +286,7 @@ export default class new_upload_btn extends LightningElement {
                 const binaryData = reader.result;
                 const workbook = XLSX.read(binaryData, { type: 'binary' });
                 const csvDataString = XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[0]]);
-                console.log('data converted to csv ' + csvDataString);
+                // console.log('data converted to csv ' + csvDataString);
                 this.headerCheck(headerValue);
                 this.dataStoreTable(rowData);
             };

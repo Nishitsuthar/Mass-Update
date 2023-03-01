@@ -76,15 +76,22 @@
             console.log('result===', result);
             if (result === 'SUCCESS' || result === 'DRAFT') {
                 console.log('In Success If===');
+                console.log('aass::', response.getReturnValue());
                 const obj = response.getReturnValue();
-                console.log('aass::' + response.getReturnValue().hasOwnProperty('pairWrapperList'));
                 console.log('aass::', typeof (response.getReturnValue()));
                 // console.log(response.getReturnValue()[0].apiNameList);
                 console.log(response.getReturnValue()[0].pairWrapperList);
                 component.set("v.fieldList", response.getReturnValue()[0].pairWrapperList);
                 component.set("v.apiListofObject", response.getReturnValue()[0].apiNameList);
-               var fiedType= JSON.parse(response.getReturnValue()[0].fieldTypeData);
-               console.log('fiedtype==>', fiedType);
+                // var fieldType = response.getReturnValue()[0].fieldMap1;
+                // var sobj11 = response.getReturnValue()[0].sobj11;
+                //    component.set('v.schema',fieldType);
+                try {
+                    // console.log('fieldType==>',  response.getReturnValue()[0].fieldMap1);
+                    // console.log('sobject1==>',response.getReturnValue()[0].sobj11);
+                } catch (error) {
+                    console.log('error==>', error);
+                }
 
 
                 // var apiList = response.getReturnValue()[0].apiNameList;
@@ -295,6 +302,63 @@
 
     setSobject: function (component, event, helper, ResultOfAllData, sfPushDataListJson, selectObjectName) {
 
+        const FieldToUpdateListWpr = JSON.parse(sfPushDataListJson);
+        const objList = [];
+        const fieldMap = component.get('v.schema');
+        console.log('fieldMap-->', fieldMap);
+        fieldMap = fieldMap.getDescribe().fields.getMap();
+        console.log('fieldMap==>', fieldMap);
+        const sobj1 = Schema.getGlobalDescribe()[selectObjectName];
+        for (const addMap of Object.values(allData)) {
+            const sobj = sobj1.newSObject();
+            for (const field of FieldToUpdateListWpr) {
+                if (addMap["CSV" + field.csvfield] !== "") {
+                    if (sobj.Id === null) {
+                        sobj.Id = addMap.SFId;
+                    }
+                    const fielddataType = fieldMap[field.SObjectField].getDescribe().getType();
+                    if (
+                        fieldMap[field.SObjectField].getDescribe().isAccessible() &&
+                        fieldMap[field.SObjectField].getDescribe().isUpdateable()
+                    ) {
+                        if (
+                            fielddataType === Schema.DisplayType.PERCENT ||
+                            fielddataType === Schema.DisplayType.CURRENCY ||
+                            fielddataType === Schema.DisplayType.Double
+                        ) {
+                            sobj[field.SObjectField] = parseFloat(
+                                addMap["CSV" + field.csvfield].trim()
+                            );
+                        } else if (fielddataType === Schema.DisplayType.DATE) {
+                            try {
+                                sobj[field.SObjectField] = new Date(
+                                    addMap["CSV" + field.csvfield].removeEnd(" 00:00:00").trim()
+                                );
+                            } catch (e) {
+                                console.log("Error for Date ", e.getMessage());
+                                return "Error " + e.getMessage();
+                            }
+                        } else if (fielddataType === Schema.DisplayType.DATETIME) {
+                            try {
+                                const dateTimeString = `${addMap["CSV" + field.csvfield]
+                                    .trim()
+                                    .substringBefore(".")}.000-00:00`;
+                                sobj[field.SObjectField] = new Date(dateTimeString);
+                            } catch (e) {
+                                console.log("Error message for date/time ", e.getMessage());
+                                return "Error " + e.getMessage();
+                            }
+                        } else if (fielddataType === Schema.DisplayType.TIME) {
+                            sobj[field.SObjectField] = addMap["CSV" + field.csvfield].trim();
+                        } else if (fielddataType === Schema.DisplayType) {
+                            // handle other types
+                        }
+                    }
+                }
+            }
+            objList.push(sobj);
+        }
+
         var action = component.get('c.setSobjectList');
 
         action.setParams({
@@ -304,7 +368,7 @@
         });
         action.setCallback(this, function (response) {
             var result = response.getState();
-            console.log('erroe '+response.getError());
+            console.log('erroe ' + response.getError());
             console.log('result :::::' + result)
             if (result == 'SUCCESS') {
                 var res = response.getReturnValue();
