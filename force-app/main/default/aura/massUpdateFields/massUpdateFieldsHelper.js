@@ -75,41 +75,24 @@
             var result = response.getState();
             console.log('result===', result);
             if (result === 'SUCCESS' || result === 'DRAFT') {
-                console.log('In Success If===');
                 console.log('aass::', response.getReturnValue());
-                const obj = response.getReturnValue();
-                console.log('aass::', typeof (response.getReturnValue()));
                 // console.log(response.getReturnValue()[0].apiNameList);
                 console.log(response.getReturnValue()[0].pairWrapperList);
                 component.set("v.fieldList", response.getReturnValue()[0].pairWrapperList);
                 component.set("v.apiListofObject", response.getReturnValue()[0].apiNameList);
-                // var fieldType = response.getReturnValue()[0].fieldMap1;
-                // var sobj11 = response.getReturnValue()[0].sobj11;
-                //    component.set('v.schema',fieldType);
-                try {
-                    // console.log('fieldType==>',  response.getReturnValue()[0].fieldMap1);
-                    // console.log('sobject1==>',response.getReturnValue()[0].sobj11);
-                } catch (error) {
-                    console.log('error==>', error);
-                }
 
+                let objList = response.getReturnValue()[0].pairWrapperList;
+                let fieldTypeObj = {};
+                objList.forEach(e => {
+                    fieldTypeObj[e.apiName] = e.fieldType;
+                });
+                component.set('v.fieldTypeObj', fieldTypeObj);
 
-                // var apiList = response.getReturnValue()[0].apiNameList;
+                var fieldType = response.getReturnValue()[0].fieldMap1;
+                component.set('v.schema',fieldType);
+
                 var apiList = component.get("v.apiListofObject")
                 console.log('apiame::' + apiList);
-                // apiList = apiList.toUpperCase();
-                // var headerData = component.get("v.header");
-                // console.log('headerData:::' + headerData);
-                // let a = apiList.includes(headerData[0]);
-                // console.log('a' + a);
-                // to check when header is not avalible in csv file 
-                // if (!apiList.includes(headerData[0])) {
-                //     helper.showToast(component, "Info", "Info!", "Check Your first Recode Or Object");
-                //     component.set("v.stepOneNextButton", true);
-                // } else {
-                //     component.set("v.stepOneNextButton", false);
-
-                // }
 
             } else {
                 component.set("v.IsSpinner", false);
@@ -305,59 +288,71 @@
         const FieldToUpdateListWpr = JSON.parse(sfPushDataListJson);
         const objList = [];
         const fieldMap = component.get('v.schema');
-        console.log('fieldMap-->', fieldMap);
-        fieldMap = fieldMap.getDescribe().fields.getMap();
-        console.log('fieldMap==>', fieldMap);
-        const sobj1 = Schema.getGlobalDescribe()[selectObjectName];
-        for (const addMap of Object.values(allData)) {
-            const sobj = sobj1.newSObject();
+        const fieldTypeObject = component.get('v.fieldTypeObj');
+        console.log('ResultOfAllData ', ResultOfAllData);
+
+        /* for (const addMap of Object.values(ResultOfAllData)) {
+            const selectedObject = component.get("v.selectedObject");
+            console.log('selectedObject ', selectedObject);
+            const sobj = {};
+            sobj[selectedObject] = {};
             for (const field of FieldToUpdateListWpr) {
+                const fielddataType = fieldTypeObject[field.SObjectField];
+                console.log('fielddataType ==> ',fieldTypeObject);
+                console.log('fielddataType ==> ',fielddataType);
+                debugger
                 if (addMap["CSV" + field.csvfield] !== "") {
-                    if (sobj.Id === null) {
-                        sobj.Id = addMap.SFId;
+                    console.log('sobj[selectedObject].Id ==> ', sobj[selectedObject]);
+                    if (sobj[selectedObject]['Id'] == undefined) {
+                        sobj[selectedObject]['Id'] = addMap.SFId;
                     }
-                    const fielddataType = fieldMap[field.SObjectField].getDescribe().getType();
+                    const fielddataType = fieldTypeObject[field.SObjectField];
+                    console.log('fielddataType ==> ',fieldTypeObject);
+                    console.log('fielddataType ==> ',fielddataType);
+                    // if (
+                    //     fieldMap[field.SObjectField].getDescribe().isAccessible() &&
+                    //     fieldMap[field.SObjectField].getDescribe().isUpdateable()
+                    // ) {
                     if (
-                        fieldMap[field.SObjectField].getDescribe().isAccessible() &&
-                        fieldMap[field.SObjectField].getDescribe().isUpdateable()
+                        fielddataType === 'PERCENT' ||
+                        fielddataType === 'CURRENCY' ||
+                        fielddataType === 'Double'
                     ) {
-                        if (
-                            fielddataType === Schema.DisplayType.PERCENT ||
-                            fielddataType === Schema.DisplayType.CURRENCY ||
-                            fielddataType === Schema.DisplayType.Double
-                        ) {
-                            sobj[field.SObjectField] = parseFloat(
-                                addMap["CSV" + field.csvfield].trim()
+                        sobj[selectedObject][field.SObjectField] = parseFloat(
+                            addMap["CSV" + field.csvfield].trim()
+                        );
+                    } else if (fielddataType === 'DATE') {
+                        try {
+                            sobj[selectedObject][field.SObjectField] = new Date(
+                                addMap["CSV" + field.csvfield].removeEnd(" 00:00:00").trim()
                             );
-                        } else if (fielddataType === Schema.DisplayType.DATE) {
-                            try {
-                                sobj[field.SObjectField] = new Date(
-                                    addMap["CSV" + field.csvfield].removeEnd(" 00:00:00").trim()
-                                );
-                            } catch (e) {
-                                console.log("Error for Date ", e.getMessage());
-                                return "Error " + e.getMessage();
-                            }
-                        } else if (fielddataType === Schema.DisplayType.DATETIME) {
-                            try {
-                                const dateTimeString = `${addMap["CSV" + field.csvfield]
-                                    .trim()
-                                    .substringBefore(".")}.000-00:00`;
-                                sobj[field.SObjectField] = new Date(dateTimeString);
-                            } catch (e) {
-                                console.log("Error message for date/time ", e.getMessage());
-                                return "Error " + e.getMessage();
-                            }
-                        } else if (fielddataType === Schema.DisplayType.TIME) {
-                            sobj[field.SObjectField] = addMap["CSV" + field.csvfield].trim();
-                        } else if (fielddataType === Schema.DisplayType) {
-                            // handle other types
+                        } catch (e) {
+                            console.log("Error for Date ", e.getMessage());
+                            return "Error " + e.getMessage();
                         }
+                    } else if (fielddataType === 'DATETIME') {
+                        try {
+                            const dateTimeString = `${addMap["CSV" + field.csvfield]
+                                .trim()
+                                .substringBefore(".")}.000-00:00`;
+                            sobj[selectedObject][field.SObjectField] = new Date(dateTimeString);
+                        } catch (e) {
+                            console.log("Error message for date/time ", e.getMessage());
+                            return "Error " + e.getMessage();
+                        }
+                    } else if (fielddataType === 'TIME') {
+                        sobj[selectedObject][field.SObjectField] = addMap["CSV" + field.csvfield].trim();
+                    } else if (fielddataType === 'Boolean') {
+                        sobj[selectedObject][field.SObjectField] = Boolean.valueof(addMap['CSV' + field.csvfield].trim());
+                    } else {
+                        sobj[selectedObject][field.SObjectField] = addMap['CSV' + field.csvfield];
                     }
+                    // }
                 }
             }
             objList.push(sobj);
-        }
+            console.log('objList data ',objList);
+        } */
 
         var action = component.get('c.setSobjectList');
 

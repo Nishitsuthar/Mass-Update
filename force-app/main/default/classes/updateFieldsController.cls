@@ -69,12 +69,21 @@ public with sharing class updateFieldsController {
 
         Map<String, Schema.SObjectField> fieldMap12 = Schema.getGlobalDescribe().get(ObjectName).getDescribe().fields.getMap();
         
+        map<string,string> newMap= new Map<string,string>();
+        
+        for(String strKey: fieldMap12.keyset()) {
+            newMap.put(strKey, String.valueof(fieldMap.get(strKey)));
+        }
+
+        
         Schema.SObjectType sobj12 = Schema.getGlobalDescribe().get(ObjectName);
+        SObject sobj = sobj12.newSObject();
+        System.debug('sobj12 '+sobj);
 
         field1.pairWrapperList = lstfieldname;
         field1.apiNameList = apiList;
         // field1.sobj11 = sobj12;
-        // field1.fieldMap1 = fieldMap12;
+        field1.fieldMap1 = newMap;
         
         System.debug('fieldMap12==>'+ fieldMap12);
         System.debug('sobj12==>'+sobj12);
@@ -625,6 +634,13 @@ public with sharing class updateFieldsController {
         List<SObject> objList = new List<SObject>(); 
        
         Map<String, Schema.SObjectField> fieldMap = Schema.getGlobalDescribe().get(selectObjectName).getDescribe().fields.getMap();
+        System.debug('fieldMap '+fieldMap);
+        
+        map<string,string> newMap= new Map<string,string>();
+        for(String strKey: fieldMap.keyset()) {
+            newMap.put(strKey, String.valueof(fieldMap.get(strKey)));
+        }
+        System.debug('fieldMap '+newMap);
         
         Schema.SObjectType sobj1 = Schema.getGlobalDescribe().get(selectObjectName);
         // System.debug('allData from :::'+ allData);
@@ -638,7 +654,7 @@ public with sharing class updateFieldsController {
                             sobj.put('Id' , addMap.get('SFId'));
                         }
                         Schema.DisplayType fielddataType = fieldMap.get(field.SObjectField).getDescribe().getType();
-                        // System.debug('fielddataType===>612==>'+ fielddataType);
+                        System.debug('fielddataType '+fielddataType);
                         if(fieldMap.get(field.SObjectField).getDescribe().isAccessible() && fieldMap.get(field.SObjectField).getDescribe().isUpdateable()){
                             if(fielddataType == Schema.DisplayType.PERCENT || fielddataType == Schema.DisplayType.CURRENCY || fielddataType == Schema.DisplayType.Double){
                                 sobj.put(field.SObjectField, Decimal.valueof(addMap.get('CSV'+field.csvfield).trim()));
@@ -839,7 +855,7 @@ public with sharing class updateFieldsController {
 public class pairWrapper1{
         @AuraEnabled public List<string> apiNameList{get; set;}
         @AuraEnabled public List<pairWrapper> pairWrapperList{get; set;}
-        // @AuraEnabled public Map<String, Schema.SObjectField> fieldMap1{get; set;}
+        @AuraEnabled public Map<String, String> fieldMap1{get; set;}
         // @AuraEnabled public Schema.SObjectType sobj11{get; set;}
     }
     // -----------jenish gangani

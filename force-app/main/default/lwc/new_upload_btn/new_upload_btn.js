@@ -287,6 +287,14 @@ export default class new_upload_btn extends LightningElement {
                 const workbook = XLSX.read(binaryData, { type: 'binary' });
                 const csvDataString = XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[0]]);
                 // console.log('data converted to csv ' + csvDataString);
+                var data1 = Papa.parse(csvDataString, {
+                    header: true,
+                    skipEmptyLines: 'greedy'
+                });
+                // console.log('data1 ' + JSON.stringify(data1));
+                // var headerValue = Object.keys(rowObject[0]);
+                var headerValue = data1.meta.fields;
+                const rowData = data1.data;
                 this.headerCheck(headerValue);
                 this.dataStoreTable(rowData);
             };
