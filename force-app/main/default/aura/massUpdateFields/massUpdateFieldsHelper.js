@@ -291,7 +291,7 @@
         const fieldTypeObject = component.get('v.fieldTypeObj');
         console.log('ResultOfAllData ', ResultOfAllData);
 
-        /* for (const addMap of Object.values(ResultOfAllData)) {
+        for (const addMap of Object.values(ResultOfAllData)) {
             const selectedObject = component.get("v.selectedObject");
             console.log('selectedObject ', selectedObject);
             const sobj = {};
@@ -350,21 +350,23 @@
                     // }
                 }
             }
-            objList.push(sobj);
+            objList.push(sobj[selectedObject]);
             console.log('objList data ',objList);
-        } */
-
+        }
+        
         var action = component.get('c.setSobjectList');
-
+        
         action.setParams({
             'allData': ResultOfAllData,
             'FieldToUpdateList': sfPushDataListJson,
             'selectObjectName': selectObjectName,
+            'records':objList
         });
         action.setCallback(this, function (response) {
+            debugger
             var result = response.getState();
-            console.log('erroe ' + response.getError());
-            console.log('result :::::' + result)
+            console.log('erroe ' , response.getError());
+            console.log('result :::::' , result)
             if (result == 'SUCCESS') {
                 var res = response.getReturnValue();
                 if (res.startsWith("Error")) {

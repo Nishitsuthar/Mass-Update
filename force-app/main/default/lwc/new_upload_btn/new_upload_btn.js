@@ -26,7 +26,7 @@ export default class new_upload_btn extends LightningElement {
                 const updatedUrl = result.replace(".my.salesforce.com", ".vf.force.com");
                 const matchIndex = updatedUrl.indexOf("-ed");
                 var VfOrigin = updatedUrl.substring(0, matchIndex + 3) + "--c" + updatedUrl.substring(matchIndex + 3);
-
+                VfOrigin = 'https://mvclouds-dev-ed--mvmu.vf.force.com';
                 window.addEventListener("message", (message) => {
                     if (message.origin !== VfOrigin) {
                         //Not the expected origin

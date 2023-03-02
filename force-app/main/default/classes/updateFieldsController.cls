@@ -627,8 +627,9 @@ public with sharing class updateFieldsController {
     
     // It will set list of Sobject for updating data into salesforce
     @AuraEnabled
-    public static String setSobjectList(Map<String,Map<String,String>> allData, String FieldToUpdateList, String selectObjectName){
+    public static String setSobjectList(Map<String,Map<String,String>> allData, String FieldToUpdateList, String selectObjectName, SObject[] records){
         System.debug('setSobjectList method call');
+        System.debug('records list sobject '+records);
 
         List<uploadCsvFileJsonWrapper>  FieldToUpdateListWpr             = (List<uploadCsvFileJsonWrapper>) System.JSON.deserialize(FieldToUpdateList       , List<uploadCsvFileJsonWrapper>.class);
         List<SObject> objList = new List<SObject>(); 
