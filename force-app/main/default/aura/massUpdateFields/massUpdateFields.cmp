@@ -26,6 +26,8 @@
     <aura:attribute name="progress" type="Integer" />
     <aura:attribute name="fileName" type="String" default="No File Selected.." />
     <aura:attribute name="operation" type="String" />  
+    <aura:attribute name="insertFieldList" type="String" />
+
      <!-- jenish gangani 2/2/23 -->
 
      <!--* Nishi Suthar 28/02/2023  -->

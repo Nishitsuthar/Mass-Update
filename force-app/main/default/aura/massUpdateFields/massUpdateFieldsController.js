@@ -241,7 +241,7 @@
         var nextStep = selectedStep == 'Step3' ? 'finished' : 'finished';
 
         if (nextStep == 'finished') {
-            helper.saveRecordsToSFForInsert(component, event, helper);
+            helper.saveRecordsToSFForToInsert(component, event, helper);
             component.set("v.currentStep", nextStep);
             component.set("v.finished", true);
         }

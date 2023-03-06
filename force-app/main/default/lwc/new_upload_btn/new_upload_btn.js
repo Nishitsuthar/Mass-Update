@@ -98,7 +98,7 @@ export default class new_upload_btn extends LightningElement {
                 this.progress = 0;
                 let disableNext = false;
 
-                if (file.size > 4000000) {
+                if (file.size > 3000000) {
                     disableNext = true;
                     this.dispatchEvent(
                         new ShowToastEvent({

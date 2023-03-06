@@ -1,10 +1,9 @@
-<apex:page showHeader="true" sidebar="true" standardStylesheets="true" applyHtmlTag="true" controller="URL_Controller">
+<apex:page showHeader="false" sidebar="false" standardStylesheets="false" applyHtmlTag="true" controller="URL_Controller">
     <html>
 
     <head>
         <title>Dropbox Chooser</title>
-        <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="7anturvlx116i1g"
-            data-static-domain="*"></script>
+        <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="7anturvlx116i1g"></script>
         <script type="text/javascript">
             function chooseFile() {
                 Dropbox.choose({
@@ -49,7 +48,7 @@
             }
             function messageSendLWC(nameFile, a) {
 
-                var lexOrigin = "{!lexOrigin1}"
+                var lexOrigin = "https://mvclouds-dev-ed.lightning.force.com"
 
                 var message = {
                     name: "new_upload_btn",
@@ -62,7 +61,7 @@
         </script>
     </head>
 
-    <body>
+    <body style="margin:0;">
         <apex:image url="{!$Resource.dropbox}" onclick="chooseFile();" height="28px" width="30px" style="border:none; cursor: pointer;
 " />
     </body>

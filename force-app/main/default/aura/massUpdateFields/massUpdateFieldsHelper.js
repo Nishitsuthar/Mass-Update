@@ -15,16 +15,7 @@
                         label: storeResponse[i].split(',')[1]
                     });
                 }
-                // function myFunction() {
-                //     cars.sort(function(a, b){
-                //       let x = a.type.toLowerCase();
-                //       let y = b.type.toLowerCase();
-                //       if (x < y) {return -1;}
-                //       if (x > y) {return 1;}
-                //       return 0;
-                //     });
-                //     displayCars();
-                //   }
+
 
                 // JENISH GANGANI
                 arr.sort((a, b) => {
@@ -89,7 +80,7 @@
                 component.set('v.fieldTypeObj', fieldTypeObj);
 
                 var fieldType = response.getReturnValue()[0].fieldMap1;
-                component.set('v.schema',fieldType);
+                component.set('v.schema', fieldType);
 
                 var apiList = component.get("v.apiListofObject")
                 console.log('apiame::' + apiList);
@@ -285,90 +276,21 @@
 
     setSobject: function (component, event, helper, ResultOfAllData, sfPushDataListJson, selectObjectName) {
 
-        const FieldToUpdateListWpr = JSON.parse(sfPushDataListJson);
-        const objList = [];
-        const fieldMap = component.get('v.schema');
-        const fieldTypeObject = component.get('v.fieldTypeObj');
-        console.log('ResultOfAllData ', ResultOfAllData);
-
-        for (const addMap of Object.values(ResultOfAllData)) {
-            const selectedObject = component.get("v.selectedObject");
-            console.log('selectedObject ', selectedObject);
-            const sobj = {};
-            sobj[selectedObject] = {};
-            for (const field of FieldToUpdateListWpr) {
-                const fielddataType = fieldTypeObject[field.SObjectField];
-                console.log('fielddataType ==> ',fieldTypeObject);
-                console.log('fielddataType ==> ',fielddataType);
-                debugger
-                if (addMap["CSV" + field.csvfield] !== "") {
-                    console.log('sobj[selectedObject].Id ==> ', sobj[selectedObject]);
-                    if (sobj[selectedObject]['Id'] == undefined) {
-                        sobj[selectedObject]['Id'] = addMap.SFId;
-                    }
-                    const fielddataType = fieldTypeObject[field.SObjectField];
-                    console.log('fielddataType ==> ',fieldTypeObject);
-                    console.log('fielddataType ==> ',fielddataType);
-                    // if (
-                    //     fieldMap[field.SObjectField].getDescribe().isAccessible() &&
-                    //     fieldMap[field.SObjectField].getDescribe().isUpdateable()
-                    // ) {
-                    if (
-                        fielddataType === 'PERCENT' ||
-                        fielddataType === 'CURRENCY' ||
-                        fielddataType === 'Double'
-                    ) {
-                        sobj[selectedObject][field.SObjectField] = parseFloat(
-                            addMap["CSV" + field.csvfield].trim()
-                        );
-                    } else if (fielddataType === 'DATE') {
-                        try {
-                            sobj[selectedObject][field.SObjectField] = new Date(
-                                addMap["CSV" + field.csvfield].removeEnd(" 00:00:00").trim()
-                            );
-                        } catch (e) {
-                            console.log("Error for Date ", e.getMessage());
-                            return "Error " + e.getMessage();
-                        }
-                    } else if (fielddataType === 'DATETIME') {
-                        try {
-                            const dateTimeString = `${addMap["CSV" + field.csvfield]
-                                .trim()
-                                .substringBefore(".")}.000-00:00`;
-                            sobj[selectedObject][field.SObjectField] = new Date(dateTimeString);
-                        } catch (e) {
-                            console.log("Error message for date/time ", e.getMessage());
-                            return "Error " + e.getMessage();
-                        }
-                    } else if (fielddataType === 'TIME') {
-                        sobj[selectedObject][field.SObjectField] = addMap["CSV" + field.csvfield].trim();
-                    } else if (fielddataType === 'Boolean') {
-                        sobj[selectedObject][field.SObjectField] = Boolean.valueof(addMap['CSV' + field.csvfield].trim());
-                    } else {
-                        sobj[selectedObject][field.SObjectField] = addMap['CSV' + field.csvfield];
-                    }
-                    // }
-                }
-            }
-            objList.push(sobj[selectedObject]);
-            console.log('objList data ',objList);
-        }
-        
         var action = component.get('c.setSobjectList');
-        
+
         action.setParams({
             'allData': ResultOfAllData,
             'FieldToUpdateList': sfPushDataListJson,
             'selectObjectName': selectObjectName,
-            'records':objList
         });
         action.setCallback(this, function (response) {
-            debugger
             var result = response.getState();
-            console.log('erroe ' , response.getError());
-            console.log('result :::::' , result)
+            console.log('erroe ' + response.getError());
+            console.log('result :::::' + result)
             if (result == 'SUCCESS') {
+                debugger
                 var res = response.getReturnValue();
+                console.log('setobject==>'+JSON.stringify(res));
                 if (res.startsWith("Error")) {
                     helper.showToast(component, "Error", "Failed!", + res);
                 } else {
@@ -398,43 +320,23 @@
             var result = response.getState();
 
             if (result == 'SUCCESS') {
-                var res = response.getReturnValue();
-                console.log('resfor insert::::' + JSON.stringify(res));
-                component.set("v.updateFieldList", res);
+                component.set("v.IsSpinner", true);
+
+                let insertData = response.getReturnValue();
+                console.log('resfor insert::::' + JSON.stringify(insertData));
+                console.log('type of insert::::' + typeof (insertData));
+                component.set("v.insertFieldList", insertData);
+                console.log('component::==>' + component.get("v.insertFieldList"));
+
             } else {
                 helper.showToast(component, "Error", "Failed!", "Error accur, Something went wrong setSobjectforInsertRecord");
             }
             component.set("v.IsSpinner", false);
+
         });
         $A.enqueueAction(action);
     },
-    // --------jenish gangani 11/02 for insert data 
 
-
-    // --------jenish gangani 11/02 for insert data 
-    // setSobjectforInsertRecord: function (component, event, helper, ResultOfAllData, sfPushDataListJson, selectObjectName) {
-
-    //     var action = component.get('c.setSobjectListForInsert');
-
-    //     action.setParams({
-    //         'allData': ResultOfAllData,
-    //         'FieldToUpdateList': sfPushDataListJson,
-    //         'selectObjectName': selectObjectName,
-    //     });
-    //     action.setCallback(this, function (response) {
-    //         var result = response.getState();
-    //         if (result == 'SUCCESS') {
-    //             var res = response.getReturnValue();
-    //             console.log('resfor insert::::' + JSON.stringify(res));
-    //             component.set("v.updateFieldList", res);
-    //         } else {
-    //             helper.showToast(component, "Error", "Failed!", "Error accur, Something went wrong setSobjectforInsertRecord");
-    //         }
-    //         component.set("v.IsSpinner", false);
-    //     });
-    //     $A.enqueueAction(action);
-    // },
-    // --------jenish gangani 11/02 for insert data 
 
 
     getSobjectList: function (component, event, helper, resultdata, query, selectObjectName, tablePushDataListJson, headerData, sfPushDataListJson, selectedListOfFields) {
@@ -658,6 +560,7 @@
         let strKey;
         var strValue = new Map();
         let k = 0;
+        const fieldTypeObject = component.get('v.fieldTypeObj');
 
         for (let data of dataList) {
             strKey = '';
@@ -668,22 +571,18 @@
                 if (data.endsWith(',')) {
                     data += ' ';
                 }
-                // let StringData = data.split(',(?=(?:[^"]"[^"]")[^"]$)');
-                // let stringData = data.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+
                 let StringData = data.split(",");
 
-                // console.log('StringData===>155==>' + StringData);
-                // console.log('valu pf string data==>' + StringData[0]);
-                // console.log('string Data===>' + typeof (StringData));
+
                 for (let ucv of tablePushDataListJsonDeserialize) {
                     // console.log('IndexFieldCSV.get(ucv.csvfield)===148==>' + IndexFieldCSV.get(ucv.csvfield));
                     if (IndexFieldCSV.get(ucv.csvfield) !== undefined) {
                         if (keyValueMap.has(ucv.SObjectField)) {
-                            // if (true) {
-                            // d.fields.getMap().get(ucv.SObjectField).getDescribe().isUpdateable() && d.fields.getMap().get(ucv.SObjectField).getDescribe().isAccessible()
-                            // let fieldType = String(d.fields.getMap().get(ucv.SObjectField).getDescribe().getType());
-                            let fieldType = 'String';
+
+                            let fieldType = fieldTypeObject[ucv.SObjectField];
                             // console.log('field type-->'+ fieldType);
+
                             let celldata = StringData[IndexFieldCSV.get(ucv.csvfield)];
                             if (fieldType === 'DATE') {
                                 strKey += String(date.parse(celldata)).replace(/\s\d{2}:\d{2}:\d{2}/, "").trim() + '^';
@@ -724,13 +623,7 @@
 
         }
 
-        // var keyValueMap1 = keyValueMap;
 
-        // console.log('keyValueMap1===>', keyValueMap1);
-        /* var obj1 = Object.fromEntries(keyValueMap);
-        var keyValueMap1 = JSON.stringify(obj1);
-        var obj2 = Object.fromEntries(csvAllDataMap);
-        var csvAllDataMap1 = JSON.stringify(obj2); */
 
         var obj1 = {};
         for (let [key, value] of keyValueMap) {
@@ -747,11 +640,6 @@
         // var csvAllDataMap1 = JSON.stringify(obj2);
         var csvAllDataMap1 = JSON.stringify(csvAllDataObject);
 
-        // console.log('keyValueMap of the ====>' + keyValueMap1);
-        // console.log('csvAllDataMap of the ===>' + csvAllDataMap1);
-
-        // console.log('keyValueMap of the ====>'+ keyValueMap1);
-        // console.log('csvAllDataMap of the ===>'+ csvAllDataMap1);
 
         // --------------------------------------------------- jenish gangani 27/02
 
@@ -811,16 +699,18 @@
         });
         $A.enqueueAction(action);
     },
-    saveRecordsToSFForInsert: function (component, event, helper) {
+    saveRecordsToSFForToInsert: function (component, event, helper) {
         component.set("v.IsSpinner", true);
         var action = component.get('c.insertRecord');
-        var data = component.get("v.updateFieldList");
+        var dataOfInsert = component.get("v.insertFieldList");
         var sfPushData = component.get('v.FieldToUpdateList');
         var selectObjectName = component.get("v.selectedObject");
         var sfPushDataListJson = JSON.stringify(sfPushData);
+        console.log('component==>' + component.get("v.insertFieldList"));
+        console.log('dataOfInsert==>', dataOfInsert);
 
         action.setParams({
-            'data': data,
+            'data': dataOfInsert,
             'FieldToUpdateList': sfPushDataListJson,
             'selectObjectName': selectObjectName
         });
@@ -995,7 +885,7 @@
                 component.set("v.dataSize", ListData.length);
                 component.set('v.TableLightningData', TempListData);
 
-                component.set("v.IsSpinner", false);
+                // component.set("v.IsSpinner", false);
                 helper.setSobjectforInsertRecord(component, event, helper, ResultOfAllData, sfPushDataListJson, selectObjectName);
 
 

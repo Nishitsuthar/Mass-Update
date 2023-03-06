@@ -33,6 +33,10 @@ public class Test_updateFieldsController {
         String tablePushDataListJson = '[{"csvfield":"Employee First Name","operator":"=","SObjectField":"FirstName"},{"csvfield":"Email","operator":"=","SObjectField":"Email"}]';        
         
         String FieldToUpdateList = '[{"csvfield":"Employee Last Name","SObjectField":"LastName"},{"csvfield":"Email","SObjectField":"Email"}]';
+
+        String keyValueMap = '{"LastName":["test98","test99","test100","test101","test102","test103","test104","test105","test106"]}' ;
+
+        String csvAllDataMap =  '{"test98":{"CSVLASTNAME":"test98","CSVFirstName":"AA-98","CSVPhone":"90888888"},"test99":{"CSVLASTNAME":"test99","CSVFirstName":"AA-99","CSVPhone":"90888888"}}'  ; 
         
         Map<String,Map<String,String>> csvData = new Map<String,Map<String,String>>();
         Map<String, String> csv = new Map<String, String>();
@@ -42,7 +46,7 @@ public class Test_updateFieldsController {
         csvData.put('Shahtest^dharmik@mvclouds.com',csv);
         
         String query = 'Select FirstName, LastName From Contact';
-        updateFieldsController.setQuery(selectedListOfFields, selectObjectName, headerData, tableData, tablePushDataListJson, FieldToUpdateList);
+        updateFieldsController.setQuery(selectedListOfFields, selectObjectName, headerData, tableData, tablePushDataListJson, FieldToUpdateList, keyValueMap, csvAllDataMap);
         updateFieldsController.setSFData(selectObjectName, csvData, query, tablePushDataListJson, headerData, FieldToUpdateList, selectedListOfFields);
         updateFieldsController.setSobjectList(csvData, FieldToUpdateList, selectObjectName);
         
