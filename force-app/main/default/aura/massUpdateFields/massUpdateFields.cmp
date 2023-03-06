@@ -456,8 +456,7 @@
                                         </td>
                                         <td data-label="checkBox">
                                             <div class="slds-truncate" title="Name"><lightning:input  checked="{!fl.Custfield}" aura:id="checkboxfield" type="checkbox" name="{!fl.apiName}" /></div> <!--checboxfield -->
-                                        </td>
-                                        
+                                        </td>      
                                     </tr>
                                 </aura:iteration>
                             </tbody>
